@@ -1,0 +1,208 @@
+<script>
+
+$(function () {
+  openPicker();
+});
+
+
+function openPicker() {
+  google.script.run
+    .withFailureHandler(showMessage)
+    .withSuccessHandler(showFilePicker)
+    .initPicker();
+}
+
+function showFilePicker(config) {
+  //console.log(1)
+  // Show all files in Google Drive for selection
+  var view = new google.picker.DocsView(google.picker.ViewId.FORMS);
+  /*
+  view.setIncludeFolders(config.picker.includeFolders)
+    .setSelectFolderEnabled(config.picker.allowFolderSelect)
+    .setParent(config.parentFolder)
+  */
+
+  // Show file as a grid or list (compact)
+  //if (config.picker.viewMode === "GRID") 
+  //view.setMode(google.picker.DocsViewMode.GRID);
+  //else
+
+  view.setMode(google.picker.DocsViewMode.LIST);
+  //console.log(2)
+  if (config.picker.mimeTypes)
+    view.setMimeTypes(config.picker.mimeTypes);
+
+  var picker = new google.picker.PickerBuilder()
+    .addView(google.picker.ViewId.FORMS)
+    .setLocale(config.locale)
+    .setOAuthToken(config.token)
+    .setDeveloperKey(config.developerKey)
+    .setCallback(fileSelected)
+    .setOrigin(google.script.host.origin)
+    .setSize(config.dialogDimensions.width - 2,
+      config.dialogDimensions.height - 2);
+  //console.log(3)
+  if (config.picker.hideTitle)
+    picker.hideTitleBar();
+
+  // Show files / folders owned by the user
+  if (config.picker.mineOnly)
+    picker.enableFeature(google.picker.Feature.MINE_ONLY);
+
+  if (config.picker.navhidden)
+    picker.enableFeature(google.picker.Feature.NAV_HIDDEN);
+
+  // Allow uses to select multiple files / folders
+  if (config.picker.multiselectEnabled)
+    picker.enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+
+  picker.build().setVisible(true);
+
+
+}
+
+// Callback function
+function fileSelected(data) {
+
+  var html = [];
+  var action = data[google.picker.Response.ACTION];
+  if (action == google.picker.Action.PICKED) {
+    materialLoading(true);
+    $("#questions").empty();
+    var documents = data[google.picker.Response.DOCUMENTS];
+    var formId = documents[0][google.picker.Document.ID];
+    var name = documents[0][google.picker.Document.NAME];
+    getItems(formId)
+
+    google.script.run
+      .withFailureHandler(showMessage)
+      .withSuccessHandler(showFilePicker)
+      .setProp("formId", formId);
+
+    google.script.run
+      .withFailureHandler(showMessage)
+      .withSuccessHandler(showFilePicker)
+      .setProp("formName", name);
+
+    html.push("Selected Form: " + (documents[0][google.picker.Document.NAME]))
+  } else if (action == google.picker.Action.CANCEL) {
+    //html.push("No file selected");
+  }
+  showMessage(html.join("\n"));
+
+
+}
+
+function getItems(id) {
+  google.script.run
+    .withFailureHandler(showMessage)
+    .withSuccessHandler(function (message) {
+      //showMessage(message)
+      //google.script.host.close();
+      $("#questions").empty();
+      if (message.length != 0) {
+        //$("#questions").append("<h5>Which questions would you like to prefill?</h5>")
+        for (var i = 0; i < message.length; i++) {
+          console.log(message[i][0])
+          var name = message[i][0]
+          var id = message[i][1]
+          $("#questions").append('<div><input type="checkbox" id="' + id + '" data-name="' + name + '" + name="' + id + '" value="' + id + '"><label for="' + id + '">' + name + '</label></div>')
+        }
+      } else {
+        $("#questions").append("This form has no questions.")
+      }
+      componentHandler.upgradeAllRegistered();
+      materialLoading(false);
+    })
+    .listQuestions(id);
+}
+
+var checked;
+$('#questions').on('change', function () {
+  checked = [];
+  checked[0] = [];
+  checked[1] = [];
+
+  $('#questions input:checked').each(function () {
+    checked[0].push($(this).attr('name'));
+    checked[1].push($(this).attr('data-name'))
+  });
+
+  if (checked[0].length > 0) {
+    $("#prefill").prop("disabled", false)
+    if (checked[0].length == 1) {
+      $("#prefill").html("Pre-fill " + checked[0].length + " field")
+    } else {
+      $("#prefill").html("Pre-fill " + checked[0].length + " fields")
+    }
+  } else {
+    $("#prefill").prop("disabled", true)
+    $("#prefill").html("Pre-fill " + checked[0].length + " fields")
+  }
+
+  console.log(checked)
+});
+
+$('#prefill').click(function () {
+  materialLoading(true);
+  $('#prefill').prop("disabled", true)
+  $('#open').prop("disabled", true)
+  $('input[type=checkbox]').attr('disabled', true);
+
+  google.script.run
+    .withSuccessHandler(function () {
+      //google.script.host.close();
+      google.script.run
+        .withSuccessHandler(function () {
+          //google.script.host.close();
+          google.script.run.withSuccessHandler(showSidebar).withFailureHandler(showMessage).newSheet()
+          //showSidebar()
+        }).withFailureHandler(function (e) {
+          $('#prefill').prop("disabled", false)
+          $('#open').prop("disabled", false)
+          materialLoading(false);
+        })
+        .setProp("selectedQsName", checked[1].join("$$|$||$||$|$||$|||$$$$|$|"));
+    }).withFailureHandler(function (e) {
+      $('#prefill').prop("disabled", false)
+      $('#open').prop("disabled", false)
+      console.log("1: " + e)
+      materialLoading(false);
+    })
+    .setProp("selectedQs", checked[0].join("$$|$||$||$|$||$|||$$$$|$|"));
+
+});
+
+function showSidebar() {
+  google.script.run
+    .withSuccessHandler(function () {
+      google.script.host.close();
+    })
+    .showSidebar();
+}
+
+function showMessage(message) {
+  google.script.run
+    .withSuccessHandler(function (output) {
+      document.getElementById("message").innerHTML = output;
+    })
+    .sanitize(message)
+
+}
+
+function sanitize(input) {
+  
+  return input.replace(/[&<>"'/]/ig, function (m) {
+    return {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      "/": '&#x2F;',
+    }[m];
+  });
+}
+
+
+</script>

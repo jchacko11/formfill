@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <?!= HtmlService.createHtmlOutputFromFile('pickerstyles').getContent(); ?>
+    <base target="_top">    
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script>google.load("picker", "1");</script>    
+  </head>
+  <body style="overflow: hidden;">
+    <div class="block form-group">
+      <button id="open" onclick="openPicker()" type="button" class="">Select File</button>
+      <button id="prefill" style="margin-right: 16px;" type="button" class="action" disabled>Pre-fill 0 fields</button>
+
+      <!-- button onclick="openUploader()" type="button" class="btn btn-primary">Upload Files</button -->
+      <h3 id="message" class="10margin"></h3>
+      <div id="questions" class="10margin">
+      </div>
+     
+
+    </div>
+    <?!= HtmlService.createHtmlOutputFromFile('imports').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('PickerJS').getContent(); ?>
+  </body>
+</html>

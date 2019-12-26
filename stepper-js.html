@@ -1,0 +1,97 @@
+<script src="https://cdn.jsdelivr.net/gh/ahlechandre/mdl-stepper@40c1874ebed4c2a2e7fa96d6ac2973dfdb34c371/stepper.min.js" defer></script>
+
+<script>
+(function () {
+  window.addEventListener('load', function () {
+    var selector = '.mdl-stepper#stepper-linear';
+    // Select stepper container element      
+    var stepperElement = document.querySelector(selector);
+    var Stepper;
+    var steps;
+
+    if (!stepperElement) return;
+
+    componentHandler.upgradeAllRegistered();
+
+    // Get the MaterialStepper instance of element to control it.          
+    Stepper = stepperElement.MaterialStepper;
+
+    if (!Stepper) {
+      console.error('MaterialStepper instance is not available for selector: ' + selector + '.');
+      return;
+    }
+    steps = stepperElement.querySelectorAll('.mdl-step');
+
+    google.script.run
+      .withSuccessHandler(
+        function (msg, element) {
+          // Respond to success conditions here.
+          if (msg == 1) {
+            Stepper.next();
+          }
+          if (msg == 2) {
+            Stepper.next();
+            Stepper.next();
+          }
+          if (msg == 3) {
+            Stepper.next();
+            Stepper.next();
+            Stepper.next();
+          }
+          console.log(msg)
+        })
+      .withFailureHandler(
+        function (msg, element) {
+          // Respond to failure conditions here.
+          console.log(msg)
+        })
+      .isReady();
+
+    $("#prefill").click(function () {
+      $(this).prop("disabled", true)
+      materialLoading(true);
+      google.script.run
+        .withSuccessHandler(function (msg, button) {
+          google.script.run.showSidebar();
+          //Stepper.next();
+          //$(button).prop("disabled", false)
+          //$("#continue2").prop("disabled", false);
+          //materialLoading(false);
+        })
+        .withFailureHandler(function (msg, button) {
+          Stepper.error(msg)
+          $(button).prop("disabled", false)
+          materialLoading(false);
+        })
+        .withUserObject(this)
+        .prefillForm();
+    });
+
+
+    for (var i = 0; i < steps.length; i++) {
+      steps[i].addEventListener('onstepnext', function (e) {
+        // {element}.MaterialStepper.next() change the state of current step to "completed" 
+        // and move one step forward.
+        Stepper.next();
+      });
+      // When user clicks on [data-stepper-back] button of step.          
+      steps[i].addEventListener('onstepback', function (e) {
+        Stepper.back();
+      });
+    }
+
+    /*
+    // When all steps are completed this event is dispatched.          
+    stepperElement.addEventListener('onsteppercomplete', function (e) {
+      var toast = document.querySelector('#snackbar-stepper-complete');
+      if (!toast) return;
+      toast.MaterialSnackbar.showSnackbar({
+        message: 'Stepper non-linear are completed',
+        timeout: 4000,
+        actionText: 'Ok'
+      });
+    });
+    */
+  });
+})();
+</script>

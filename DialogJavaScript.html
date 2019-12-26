@@ -1,0 +1,105 @@
+<script>
+/**
+ * Run initializations on dialog load.
+ */
+$(function () {
+    appendHeaders();
+    $("#selected, #baseList").sortable({
+        connectWith: ".connectedSortable"
+    }).disableSelection();
+
+    // Call the server here to retrieve any information needed to build
+    // the dialog, if necessary.
+});
+
+/**
+ * Displays the given status message in the dialog.
+ *
+ * @param {String} msg The status message to display.
+ * @param {String} classId The message type (class id) that the message
+ *   should be displayed as.
+ */
+function showStatus(msg, classId) {
+	$('#dialog-status').removeClass().html(msg);
+	if (classId) {
+		$('#dialog-status').addClass(classId);
+	}
+}
+
+function appendHeaders() {
+	materialLoading(true);
+	google.script.run
+		.withSuccessHandler(
+            function (msg, element) {
+				// Respond to success conditions here.
+				for (var i = 0; i < msg.length; i++) {
+					$("#baseList").append('<li id="' + i + '"><span class="mdl-chip"><span class="mdl-chip__text">' + sanitize(msg[i]) + '</span></span></li>')
+				}
+				console.log(msg)
+				materialLoading(false);
+			})
+		.withFailureHandler(
+			function (msg, element) {
+				// Respond to failure conditions here.
+				showStatus(msg, 'error');
+				console.log(msg)
+				materialLoading(false);
+			})
+		.getHeaders();
+}
+
+function showSidebar() {
+	google.script.run
+		.withSuccessHandler(function () {
+			google.script.host.close();
+		})
+		.showSidebar();
+}
+
+$("#submit").click(function () {
+	materialLoading(true);
+	$("#submit").prop("disabled", true)
+	var output = [];
+	$('#selected li').each(function (i) {
+		output.push($(this).attr('id'))
+		//console.log($(this).attr('id'));
+	});
+	google.script.run
+		.withSuccessHandler(function () {
+			google.script.run
+                .withSuccessHandler(showSidebar)
+				.withFailureHandler(function (e) {
+                    console.log(e)
+                    $("#submit").prop("disabled", false)
+                    materialLoading(false);
+                })
+                .createPrintables()
+		})
+		.withFailureHandler(function (e) {
+			console.log(e)
+			$("#submit").prop("disabled", false)
+			materialLoading(false);
+		})
+		.setProp("printableColumns", output.join(","))
+});
+
+$("#selected").on("sortreceive", function (event, ui) {
+	if ($("#selected li").length > 5) {
+		$(ui.sender).sortable('cancel');
+	}
+});
+
+function sanitize(input) {
+  
+  return input.replace(/[&<>"'/]/ig, function (m) {
+    return {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      "/": '&#x2F;',
+    }[m];
+  });
+}
+</script>
