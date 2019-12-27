@@ -34,8 +34,7 @@ function onInstall(e) {
 }
 
 /**
- * Opens a sidebar. The sidebar structure is described in the Sidebar.html
- * project file.
+ * Opens a sidebar.
  */
 function showSidebar() {
   var ui = HtmlService.createTemplateFromFile('stepper')
@@ -46,8 +45,7 @@ function showSidebar() {
 }
 
 /**
- * Opens a dialog. The dialog structure is described in the Dialog.html
- * project file.
+ * Opens a dialog.
  */
 function showPicker() {
   var ui = HtmlService.createTemplateFromFile('picker')
@@ -59,8 +57,7 @@ function showPicker() {
 }
 
 /**
- * Opens a dialog. The dialog structure is described in the Dialog.html
- * project file.
+ * Opens a dialog.
  */
 function showChoosePrintables() {
   var ui = HtmlService.createTemplateFromFile('choosePrintables')
