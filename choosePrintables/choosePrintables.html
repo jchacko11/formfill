@@ -3,7 +3,7 @@
   <head>
     <base target="_top">
     <!-- Use a templated HTML printing scriptlet to import common stylesheet -->
-    <?!= HtmlService.createHtmlOutputFromFile('choosePrintables-css').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('choosePrintables/choosePrintables-css').getContent(); ?>
   </head>
   <body>
 
@@ -22,6 +22,6 @@
 
     <!-- Use a templated HTML printing scriptlet to import JavaScript. -->
     <?!= HtmlService.createHtmlOutputFromFile('imports').getContent(); ?>
-    <?!= HtmlService.createHtmlOutputFromFile('choosePrintables-js').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('choosePrintables/choosePrintables-js').getContent(); ?>
   </body>
 </html>

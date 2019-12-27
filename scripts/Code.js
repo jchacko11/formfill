@@ -1,4 +1,3 @@
-//7 sources 12 quotees
 //TODO: sanitize, withUser Object, margins, prevent overflows (ellipses), Display names of output sheets, error handling
 
 /**
@@ -37,7 +36,7 @@ function onInstall(e) {
  * Opens a sidebar.
  */
 function showSidebar() {
-  var ui = HtmlService.createTemplateFromFile('stepper')
+  var ui = HtmlService.createTemplateFromFile('stepper/stepper')
       .evaluate()
       .setTitle(SIDEBAR_TITLE)
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
@@ -48,7 +47,7 @@ function showSidebar() {
  * Opens a dialog.
  */
 function showPicker() {
-  var ui = HtmlService.createTemplateFromFile('picker')
+  var ui = HtmlService.createTemplateFromFile('picker/picker')
       .evaluate()
       .setWidth(800)
       .setHeight(525)
@@ -60,7 +59,7 @@ function showPicker() {
  * Opens a dialog.
  */
 function showChoosePrintables() {
-  var ui = HtmlService.createTemplateFromFile('choosePrintables')
+  var ui = HtmlService.createTemplateFromFile('choosePrintables/choosePrintables')
       .evaluate()
       .setWidth(800)
       .setHeight(525)
@@ -115,7 +114,7 @@ function newSheet() {
   var form = FormApp.openById(getProp("formId"))
   for(var i = 0; i < selectedQs.length; i++){
     var currentItem = form.getItemById(parseInt(selectedQsId[i], 10))
-    if(currentItem.getType() != FormApp.ItemType.DATE || currentItem.getType() != FormApp.ItemType.DATETIME){
+    if(currentItem.getType() != FormApp.ItemType.DATE && currentItem.getType() && FormApp.ItemType.DATETIME && currentItem.getType() != FormApp.ItemType.DURATION && currentItem.getType() != FormApp.ItemType.TIME){
       rangey.setNumberFormat('@STRING@');
     }
     rangey = rangey.offset(0, 1)
@@ -283,8 +282,6 @@ function prefillForm(){
   if(protection){
     protection.remove()
   }
-
-
 
   //var currentSheet = spreadsheet.getSheetByName("Sheet11")
   var split = "$$|$||$||$|$||$|||$$$$|$|"

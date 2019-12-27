@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <?!= HtmlService.createHtmlOutputFromFile('picker-css').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('picker/picker-css').getContent(); ?>
     <base target="_top">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script>google.load("picker", "1");</script>
@@ -19,6 +19,6 @@
 
     </div>
     <?!= HtmlService.createHtmlOutputFromFile('imports').getContent(); ?>
-    <?!= HtmlService.createHtmlOutputFromFile('picker-js').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('picker/picker-js').getContent(); ?>
   </body>
 </html>

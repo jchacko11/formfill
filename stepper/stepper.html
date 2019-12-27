@@ -3,7 +3,7 @@
   <head>
     <base target="_top">
     <!-- Use a templated HTML printing scriptlet to import common stylesheet -->
-    <?!= HtmlService.createHtmlOutputFromFile('stepper-css').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('stepper/stepper-css').getContent(); ?>
   </head>
   <body class="mdl-color--grey-100 mdl-color-text--grey-700" style="overflow: hidden;">
     <ul class="mdl-stepper mdl-stepper--linear" id="stepper-linear">
@@ -156,6 +156,6 @@
     </ul>
 
     <?!= HtmlService.createHtmlOutputFromFile('imports').getContent(); ?>
-    <?!= HtmlService.createHtmlOutputFromFile('stepper-js').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('stepper/stepper-js').getContent(); ?>
   </body>
 </html>
