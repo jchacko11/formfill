@@ -50,6 +50,21 @@ function setProp(property, val){
   }
 }
 
+//set multiple properties
+function setProps(properties, values){
+  var docProperties = PropertiesService.getDocumentProperties();
+  if(docProperties){
+    for(var i = 0; i < properties.length; i++){
+      try{
+        docProperties.setProperty(properties[i], values[i])
+      }catch(e){
+        console.error("Property write error: " + e)
+      }
+    }
+  }
+
+}
+
 function getProp(property){
   //check if undefines
   var docProperties = PropertiesService.getDocumentProperties();

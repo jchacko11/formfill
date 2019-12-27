@@ -62,7 +62,7 @@ function showPicker() {
  * Opens a dialog. The dialog structure is described in the Dialog.html
  * project file.
  */
-function showDialog2() {
+function showChoosePrintables() {
   var ui = HtmlService.createTemplateFromFile('choosePrintables')
       .evaluate()
       .setWidth(800)
@@ -85,7 +85,7 @@ function newSheet() {
   try{
     currentSheet.setName(truncate(getProp("formName"), 25) + " Prefill")
   }catch(e){
-    currentSheet.setName(truncate(getProp("formName"), 20) + " Prefill " + getRandomInt(100000))
+    currentSheet.setName(truncate(getProp("formName"), 20) + " Prefill " + randTime())
   }
 
   setProp("sheetName", currentSheet.getName())
@@ -136,7 +136,7 @@ function createPrintables(){
   try{
     currentSheet.setName(truncate(getProp("formName"), 25) + " Printables")
   }catch(e){
-    currentSheet.setName(truncate(getProp("formName"), 20) + " Printables " + getRandomInt(100000))
+    currentSheet.setName(truncate(getProp("formName"), 20) + " Printables " + randTime())
   }
 
 

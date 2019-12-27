@@ -23,7 +23,7 @@ function showFilePicker(config) {
   */
 
   // Show file as a grid or list (compact)
-  //if (config.picker.viewMode === "GRID") 
+  //if (config.picker.viewMode === "GRID")
   //view.setMode(google.picker.DocsViewMode.GRID);
   //else
 
@@ -60,6 +60,8 @@ function showFilePicker(config) {
 
 
 }
+var formName;
+var formId;
 
 // Callback function
 function fileSelected(data) {
@@ -70,19 +72,21 @@ function fileSelected(data) {
     materialLoading(true);
     $("#questions").empty();
     var documents = data[google.picker.Response.DOCUMENTS];
-    var formId = documents[0][google.picker.Document.ID];
-    var name = documents[0][google.picker.Document.NAME];
+    formId = documents[0][google.picker.Document.ID];
+    formName = documents[0][google.picker.Document.NAME];
     getItems(formId)
 
+/*
     google.script.run
       .withFailureHandler(showMessage)
       .withSuccessHandler(showFilePicker)
-      .setProp("formId", formId);
+      .setProp(, formId);
 
     google.script.run
       .withFailureHandler(showMessage)
       .withSuccessHandler(showFilePicker)
-      .setProp("formName", name);
+      .setProp("", name);
+*/
 
     html.push("Selected Form: " + (documents[0][google.picker.Document.NAME]))
   } else if (action == google.picker.Action.CANCEL) {
@@ -152,24 +156,14 @@ $('#prefill').click(function () {
   google.script.run
     .withSuccessHandler(function () {
       //google.script.host.close();
-      google.script.run
-        .withSuccessHandler(function () {
-          //google.script.host.close();
-          google.script.run.withSuccessHandler(showSidebar).withFailureHandler(showMessage).newSheet()
-          //showSidebar()
-        }).withFailureHandler(function (e) {
-          $('#prefill').prop("disabled", false)
-          $('#open').prop("disabled", false)
-          materialLoading(false);
-        })
-        .setProp("selectedQsName", checked[1].join("$$|$||$||$|$||$|||$$$$|$|"));
+      google.script.run.withSuccessHandler(showSidebar).withFailureHandler(showMessage).newSheet()
     }).withFailureHandler(function (e) {
       $('#prefill').prop("disabled", false)
       $('#open').prop("disabled", false)
       console.log("1: " + e)
       materialLoading(false);
     })
-    .setProp("selectedQs", checked[0].join("$$|$||$||$|$||$|||$$$$|$|"));
+    .setProps(["selectedQs", "selectedQsName", "formId", "formName"], [checked[0].join("$$|$||$||$|$||$|||$$$$|$|"), checked[1].join("$$|$||$||$|$||$|||$$$$|$|"), formId, formName]);
 
 });
 
@@ -191,7 +185,7 @@ function showMessage(message) {
 }
 
 function sanitize(input) {
-  
+
   return input.replace(/[&<>"'/]/ig, function (m) {
     return {
       '&': '&amp;',
