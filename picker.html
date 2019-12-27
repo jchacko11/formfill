@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <?!= HtmlService.createHtmlOutputFromFile('pickerstyles').getContent(); ?>
-    <base target="_top">    
+    <?!= HtmlService.createHtmlOutputFromFile('picker-css').getContent(); ?>
+    <base target="_top">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script>google.load("picker", "1");</script>    
+    <script>google.load("picker", "1");</script>
   </head>
   <body style="overflow: hidden;">
     <div class="block form-group">
@@ -15,10 +15,10 @@
       <h3 id="message" class="10margin"></h3>
       <div id="questions" class="10margin">
       </div>
-     
+
 
     </div>
     <?!= HtmlService.createHtmlOutputFromFile('imports').getContent(); ?>
-    <?!= HtmlService.createHtmlOutputFromFile('PickerJS').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('picker-js').getContent(); ?>
   </body>
 </html>

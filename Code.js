@@ -63,7 +63,7 @@ function showPicker() {
  * project file.
  */
 function showDialog2() {
-  var ui = HtmlService.createTemplateFromFile('Dialog')
+  var ui = HtmlService.createTemplateFromFile('choosePrintables')
       .evaluate()
       .setWidth(800)
       .setHeight(525)

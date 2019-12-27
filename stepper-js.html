@@ -4,7 +4,7 @@
 (function () {
   window.addEventListener('load', function () {
     var selector = '.mdl-stepper#stepper-linear';
-    // Select stepper container element      
+    // Select stepper container element
     var stepperElement = document.querySelector(selector);
     var Stepper;
     var steps;
@@ -13,7 +13,7 @@
 
     componentHandler.upgradeAllRegistered();
 
-    // Get the MaterialStepper instance of element to control it.          
+    // Get the MaterialStepper instance of element to control it.
     Stepper = stepperElement.MaterialStepper;
 
     if (!Stepper) {
@@ -38,6 +38,19 @@
             Stepper.next();
             Stepper.next();
           }
+
+          //disable buttons according to ready state
+          if(msg >= 1){
+            $("#continue1").prop("disabled", false);
+          }
+          if(msg >= 2){
+            $("#continue2").prop("disabled", false);
+          }
+          if(msg >= 3){
+            $("#continue3").prop("disabled", false);
+            
+          }
+
           console.log(msg)
         })
       .withFailureHandler(
@@ -70,18 +83,18 @@
 
     for (var i = 0; i < steps.length; i++) {
       steps[i].addEventListener('onstepnext', function (e) {
-        // {element}.MaterialStepper.next() change the state of current step to "completed" 
+        // {element}.MaterialStepper.next() change the state of current step to "completed"
         // and move one step forward.
         Stepper.next();
       });
-      // When user clicks on [data-stepper-back] button of step.          
+      // When user clicks on [data-stepper-back] button of step.
       steps[i].addEventListener('onstepback', function (e) {
         Stepper.back();
       });
     }
 
     /*
-    // When all steps are completed this event is dispatched.          
+    // When all steps are completed this event is dispatched.
     stepperElement.addEventListener('onsteppercomplete', function (e) {
       var toast = document.querySelector('#snackbar-stepper-complete');
       if (!toast) return;
