@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <!-- Use a templated HTML printing scriptlet to import common stylesheet -->
+    <?!= HtmlService.createHtmlOutputFromFile('sidebar-css').getContent(); ?>
+  </head>
+  <body class="mdl-color--grey-100 mdl-color-text--grey-700" style="overflow: hidden;">
+    <ul class="mdl-stepper mdl-stepper--linear" id="stepper-linear">
+      <li class="mdl-step mdl-step--editable">
+        <span class="mdl-step__label">
+                  <span class="mdl-step__title">
+                    <span class="mdl-step__title-text">Select Questions</span>
+        </span>
+        </span>
+        <div class="mdl-step__content">
+          <p>
+            Select a Google Forms file that you would like to use.
+          </p>
+          <button class="" onclick="google.script.run.showPicker()" id="select">Select File</button>
+          <br>
+          <br>
+            <? var formName = getProp("formName") 
+            if(formName) { ?>
+              <strong><?= "Selected Form: " + truncate(formName, 30) ?></strong>
+            <? }else{ ?>
+              <strong><?= "No form selected. Please select a file" ?></strong>
+            <? } ?>
+            <ul class="hideoverflow">
+              <? var selectedQ = getProp("selectedQsName");
+                if(selectedQ){
+                 var data = selectedQ.split("$$|$||$||$|$||$|||$$$$|$|");
+                 var dataId = getProp("selectedQs").split("$$|$||$||$|$||$|||$$$$|$|");
+                 
+                 if(data.length == 0){ ?>
+                  <li><strong><?= "No Questions in Form" ?></strong></li>
+                  
+                  <? }
+                 
+                  for (var i = 0; i < data.length; i++) { ?>
+                    <li><?= data[i] ?></li>
+              <? }}else if(formName){"No Questions in Form"}?>
+            </ul>
+        </div>
+        <div class="mdl-step__actions">
+          <button id="continue1" class="action" data-stepper-next disabled>
+                Continue
+              </button>
+        </div>
+      </li>
+      <li class="mdl-step mdl-step--editable">
+        <span class="mdl-step__label">
+              <span class="mdl-step__title">
+                <span class="mdl-step__title-text">Prefill Form</span>
+        </span>
+        </span>
+        <div class="mdl-step__content">
+        
+        <? var id = getProp("sheetId");
+        var sheet = getSheetById(parseInt(id, 10))
+        if(sheet){ ?>
+          
+          <p>Prefill your data in the sheet: 
+          <br>
+          <strong><?=sheet.getName()?></strong>
+          </p>
+        <? } ?>
+        
+        <button id="prefill" class="right-pad float" data-stepper-next>
+                Prefill
+            </button>
+
+        </div>
+        <div class="mdl-step__actions">
+          <button id="continue2" class="action" data-stepper-next disabled>
+                Continue
+              </button>
+          <button class="" data-stepper-back>
+                Back
+              </button>
+        </div>
+      </li>
+      <li class="mdl-step mdl-step--editable mdl-step--optional">
+        <span class="mdl-step__label">
+              <span class="mdl-step__title">
+                <span class="mdl-step__title-text">Create Printables</span>
+                <span class="mdl-step__title-message">Optional</span>
+        </span>
+        </span>
+        <div class="mdl-step__content">
+        <p>
+          Choose information to be displayed with printable QR Codes.
+        </p>
+        <button class="" onclick="google.script.run.showDialog2()">Choose info</button>
+        
+        <ul class="hideoverflow">
+            <? var items = getHeaders()
+            if(items){
+                var prop = getProp("printableColumns");
+                if(prop){
+                var selected = prop.split(",");
+                  for (var i = 0; i < selected.length; i++) { ?>
+                    <li><?= items[selected[i]] ?></li>
+              <? } }}?>
+              </ul>
+        
+        </div>
+        <div class="mdl-step__actions">
+          <button id="continue3" class="action" data-stepper-next disabled>
+                Continue
+              </button>
+          <button class="" data-stepper-back>
+                Back
+              </button>
+        </div>
+      </li>
+      
+      
+      <li class="mdl-step mdl-step--optional">
+        <span class="mdl-step__label">
+              <span class="mdl-step__title">
+                <span class="mdl-step__title-text">Print Sheet</span>
+                <span class="mdl-step__title-message">Optional</span>
+        </span>
+        </span>
+        <div class="mdl-step__content">
+      
+
+        <? var id = getProp("printSheet");
+        var sheet = getSheetById(parseInt(id, 10))
+        if(sheet){ ?>
+          
+          <p>Printable sheet: 
+          <br>
+          <strong><?=sheet.getName()?></strong>
+          </p>
+        <? }?>
+
+        <p>
+          Tip: Print the sheet portrait for 3 per page and landscape for 2 per page.
+        </p>  
+        
+        </div>
+        <div class="mdl-step__actions">
+          <button id="new" onclick="google.script.run.clearDocProperties()" class="create" data-stepper-next>
+                Reset
+              </button>
+          <button class="" data-stepper-back>
+                Back
+              </button>
+        </div>
+      </li>
+      
+      
+      
+    </ul>
+
+    <?!= HtmlService.createHtmlOutputFromFile('imports').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('SidebarJavaScript').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('stepper-js').getContent(); ?>
+  </body>
+</html>
+
+

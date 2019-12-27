@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <!-- Use a templated HTML printing scriptlet to import common stylesheet -->
+    <?!= HtmlService.createHtmlOutputFromFile('Stylesheet').getContent(); ?>
+  </head>
+  <body>
+
+    <button id="submit" class="action">
+          Create Printables
+        </button>
+        <p>Drag the fields you would link to display with the printable QR codes.</p>
+    <div class="mdl-grid">
+      <div class="mdl-cell mdl-cell--4-col mdl-cell--2-col-phone"><h3>Selected Information (Max 5 Fields)</h3></div>
+      <div class="mdl-cell mdl-cell--4-col mdl-cell--2-col-phone"><h3>All Column Headers</h3></div>
+    </div>
+    <div class="mdl-grid">
+      <div class="mdl-cell mdl-cell--4-col mdl-cell--2-col-phone"><ul id="selected" class="connectedSortable"></ul></div>
+      <div class="mdl-cell mdl-cell--4-col mdl-cell--2-col-phone"><ul id="baseList" class="connectedSortable"></ul></div>
+    </div>
+
+    <!-- Use a templated HTML printing scriptlet to import JavaScript. -->
+    <?!= HtmlService.createHtmlOutputFromFile('imports').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('DialogJavaScript').getContent(); ?>
+  </body>
+</html>
