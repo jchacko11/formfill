@@ -1,0 +1,71 @@
+<script>
+  /**
+   * Run initializations on sidebar load.
+   */
+  $(function() {
+    google.script.run
+        .withSuccessHandler(
+          function(msg, element) {
+            // Respond to success conditions here.
+            if(msg >= 1){
+              $("#continue1").prop("disabled", false);
+            }
+            if(msg >= 2){
+              $("#continue2").prop("disabled", false);
+            }
+            if(msg >= 3){
+              $("#continue3").prop("disabled", false);
+            }
+            console.log(msg)
+          })
+        .withFailureHandler(
+          function(msg, element) {
+            // Respond to failure conditions here.
+            showStatus(msg, 'error');
+            console.log(msg)
+          })
+        .isReady();
+    
+
+    // Call the server here to retrieve any information needed to build
+    // the dialog, if necessary.
+  });
+
+  /**
+   * Displays the given status message in the sidebar.
+   *
+   * @param {String} msg The status message to display.
+   * @param {String} classId The message type (class id) that the message
+   *   should be displayed as.
+   */
+  function showStatus(msg, classId) {
+    $('#sidebar-status').removeClass().html(msg);
+    if (classId) {
+      $('#sidebar-status').addClass(classId);
+    }
+  }
+  
+  function getItems(id) {
+    google.script.run
+    .withFailureHandler(showStatus)
+    .withSuccessHandler(function(message){
+      //showMessage(message)
+      //google.script.host.close();
+      $("#questions").empty();
+      if(message.length != 0){
+        //$("#questions").append("<h5>Which questions would you like to prefill?</h5>")
+        for(var i = 0; i<message.length; i++){
+          console.log(message[i][0])
+          var name = message[i][0]
+          var id = message[i][1]
+          $("#questions").append("<input type='checkbox' data-name='"+ name +"' + name='" + id + "' value='" + id + "'>" + name + "<br>")
+        }
+      }else{
+          $("#questions").append("This form has no questions.")
+      }
+    })
+    .listQuestions(id);
+  }
+ 
+  
+</script>
