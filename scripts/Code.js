@@ -117,6 +117,37 @@ function newSheet() {
     if(currentItem.getType() != FormApp.ItemType.DATE && currentItem.getType() && FormApp.ItemType.DATETIME && currentItem.getType() != FormApp.ItemType.DURATION && currentItem.getType() != FormApp.ItemType.TIME){
       rangey.setNumberFormat('@STRING@');
     }
+
+    if(currentItem.getType() == FormApp.ItemType.MULTIPLE_CHOICE){
+      var choiceOptions = [];
+      for each (var item in currentItem.asMultipleChoiceItem().getChoices()){
+        choiceOptions.push(item.getValue())
+      }
+
+      var multipleChoiceRule = SpreadsheetApp.newDataValidation().requireValueInList(choiceOptions).build();
+      rangey.setDataValidation(multipleChoiceRule);
+    }
+
+    if(currentItem.getType() == FormApp.ItemType.LIST){
+      var choiceOptions = [];
+      for each (var item in currentItem.asListItem().getChoices()){
+        choiceOptions.push(item.getValue())
+      }
+
+      var listRule = SpreadsheetApp.newDataValidation().requireValueInList(choiceOptions).build();
+      rangey.setDataValidation(listRule);
+    }
+
+    if(currentItem.getType() == FormApp.ItemType.SCALE){
+      var lowerBound = currentItem.asScaleItem().getLowerBound();
+      var upperBound = currentItem.asScaleItem().getUpperBound();
+
+      var scaleRule = SpreadsheetApp.newDataValidation().requireValueInList(getIntsBetween(lowerBound, upperBound)).build();
+      rangey.setDataValidation(scaleRule);
+    }
+
+
+
     rangey = rangey.offset(0, 1)
   }
 }
@@ -409,6 +440,10 @@ function prefillForm(){
   }
 
   var outputRange = currentSheet.getRange(3, (selectedQs.length + 1), currentSheet.getLastRow()-2)
+
+  //clear data validation
+  outputRange.setDataValidation(null)
+
   console.log(shortened)
   outputRange.setValues(out)
   setProp("prefillStatus", "true")
