@@ -14,7 +14,7 @@ function repairFormUrl( url ) {
 }
 
 function sanitize(input) {
-  
+
   return input.replace(/[&<>"'/]/ig, function (m) {
     return {
       '&': '&amp;',
@@ -44,7 +44,7 @@ function clearDocProperties(){
 
 //is the user ready to create newSheet()
 function isReady(){
-  var formName = getProp("formName") 
+  var formName = getProp("formName")
   if(formName) {
     var selectedQ = getProp("selectedQsName");
     if(selectedQ){
@@ -78,4 +78,13 @@ function randTime(){
   var d = new Date();
   var n = d.getTime();
   return n-1576000000000;
+}
+
+//gets all ints getween lower and upper bound inclusive
+function getIntsBetween(lower, upper){
+  var list = [];
+  for (var i = lower; i <= upper; i++) {
+      list.push(i);
+  }
+  return list;
 }
