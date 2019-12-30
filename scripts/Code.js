@@ -327,6 +327,9 @@ function prefillForm(){
     currentSheet.insertColumnAfter(currentSheet.getMaxColumns()).setColumnWidth(currentSheet.getMaxColumns(), 170)
     currentSheet.getRange(1, currentSheet.getMaxColumns()).setValue("Shortened Links")
   }
+  
+  //clear data validation
+  currentSheet.getRange(3, (selectedQs.length + 1), currentSheet.getMaxRows()-2).setDataValidation(null)
 
   var range = currentSheet.getRange(1, 1, currentSheet.getLastRow(), selectedQs.length)
   //var outputRange = currentSheet.getRange("A14")
@@ -441,8 +444,7 @@ function prefillForm(){
 
   var outputRange = currentSheet.getRange(3, (selectedQs.length + 1), currentSheet.getLastRow()-2)
 
-  //clear data validation
-  outputRange.setDataValidation(null)
+
 
   console.log(shortened)
   outputRange.setValues(out)
