@@ -15,9 +15,10 @@
         </span>
         <div class="mdl-step__content">
           <p>
-            Select a Google Forms file that you would like to use.
+            Select a Google Form that you would like to use. If you don't have one in mind, <a href="https://forms.new">create a new Google Form</a> first.
           </p>
-          <button class="" onclick="google.script.run.showPicker()" id="select">Select File</button>
+          <button class="" onclick="google.script.run.showPicker()" id="select">Select Form</button>
+          
           <br>
           <br>
             <? var formName = getProp("formName")
@@ -102,29 +103,7 @@
                   for (var i = 0; i < selected.length; i++) { ?>
                     <li><?= items[selected[i]] ?></li>
               <? } }}?>
-              </ul>
-
-        </div>
-        <div class="mdl-step__actions">
-          <button id="continue3" class="action" data-stepper-next disabled>
-                Continue
-              </button>
-          <button class="" data-stepper-back>
-                Back
-              </button>
-        </div>
-      </li>
-
-
-      <li class="mdl-step mdl-step--optional">
-        <span class="mdl-step__label">
-              <span class="mdl-step__title">
-                <span class="mdl-step__title-text">Print Sheet</span>
-                <span class="mdl-step__title-message">Optional</span>
-        </span>
-        </span>
-        <div class="mdl-step__content">
-
+        </ul>
 
         <? var id = getProp("printSheet");
         var sheet = getSheetById(parseInt(id, 10))
@@ -136,10 +115,6 @@
           </p>
         <? }?>
 
-        <p>
-          Tip: Print the sheet portrait for 3 per page and landscape for 2 per page.
-        </p>
-
         </div>
         <div class="mdl-step__actions">
           <button id="new" onclick="google.script.run.clearDocProperties()" class="create" data-stepper-next>
@@ -150,9 +125,6 @@
               </button>
         </div>
       </li>
-
-
-
     </ul>
 
     <?!= HtmlService.createHtmlOutputFromFile('imports').getContent(); ?>
