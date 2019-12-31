@@ -64,7 +64,7 @@ function showChoosePrintables() {
       .setWidth(800)
       .setHeight(525)
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
-  SpreadsheetApp.getUi().showModalDialog(ui, "Display Options");
+  SpreadsheetApp.getUi().showModalDialog(ui, "Choose Printable Information");
 }
 
 //creates a new sheet with selected questions as column headers
