@@ -66,7 +66,6 @@ var formId;
 // Callback function
 function fileSelected(data) {
 
-  var html = [];
   var action = data[google.picker.Response.ACTION];
   if (action == google.picker.Action.PICKED) {
     materialLoading(true);
@@ -88,18 +87,23 @@ function fileSelected(data) {
       .setProp("", name);
 */
 
-    html.push("Selected Form: " + (documents[0][google.picker.Document.NAME]))
+    showMessage("Selected Form: " + (documents[0][google.picker.Document.NAME]));
+    $("#prefill").prop("disabled", true)
+    $("#prefill").html("Pre-fill 0 fields")
   } else if (action == google.picker.Action.CANCEL) {
     //html.push("No file selected");
   }
-  showMessage(html.join("\n"));
+
 
 
 }
 
 function getItems(id) {
   google.script.run
-    .withFailureHandler(showMessage)
+    .withFailureHandler(function(e){
+      showError("Error retrieving form questions")
+      materialLoading(false);
+    })
     .withSuccessHandler(function (message) {
       //showMessage(message)
       //google.script.host.close();
@@ -113,7 +117,7 @@ function getItems(id) {
           $("#questions").append('<div><input type="checkbox" id="' + id + '" data-name="' + name + '" + name="' + id + '" value="' + id + '"><label for="' + id + '">' + name + '</label></div>')
         }
       } else {
-        $("#questions").append("This form has no questions.")
+        $("#questions").append("This form has no supported questions.")
       }
       componentHandler.upgradeAllRegistered();
       materialLoading(false);
@@ -151,17 +155,25 @@ $('#prefill').click(function () {
   materialLoading(true);
   $('#prefill').prop("disabled", true)
   $('#open').prop("disabled", true)
-  $('input[type=checkbox]').attr('disabled', true);
 
   google.script.run
     .withSuccessHandler(function () {
       //google.script.host.close();
-      google.script.run.withSuccessHandler(showSidebar).withFailureHandler(showMessage).newSheet()
+      google.script.run
+        .withSuccessHandler(showSidebar)
+        .withFailureHandler(function(e){
+          materialLoading(false);
+          showError("Error creating new sheet")
+          $('#prefill').prop("disabled", false)
+          $('#open').prop("disabled", false)
+        })
+        .newSheet()
     }).withFailureHandler(function (e) {
       $('#prefill').prop("disabled", false)
       $('#open').prop("disabled", false)
       console.log("1: " + e)
       materialLoading(false);
+      showError("Error saving selected information")
     })
     .setProps(["selectedQs", "selectedQsName", "formId", "formName"], [checked[0].join("$$|$||$||$|$||$|||$$$$|$|"), checked[1].join("$$|$||$||$|$||$|||$$$$|$|"), formId, formName]);
 
@@ -182,6 +194,12 @@ function showMessage(message) {
     })
     .sanitize(message)
 
+}
+
+function showError(e){
+  $("#error").show()
+  $("#errorText").html(e)
+  console.log(e)
 }
 
 function sanitize(input) {
