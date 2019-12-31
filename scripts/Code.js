@@ -300,7 +300,7 @@ function main(){
 }
 
 //TODO make split global var
-function prefillForm(){
+function prefillForm(shortenType){
   clearProp("shortenedUrls")
   clearProp("prefillStatus")
   clearProp("printableColumns")
@@ -326,7 +326,7 @@ function prefillForm(){
 
   if(selectedQsId.length == currentSheet.getMaxColumns()){
     currentSheet.insertColumnAfter(currentSheet.getMaxColumns()).setColumnWidth(currentSheet.getMaxColumns(), 170)
-    currentSheet.getRange(1, currentSheet.getMaxColumns()).setValue("Shortened Links")
+    currentSheet.getRange(1, currentSheet.getMaxColumns()).setValue("Prefilled Links")
   }
 
   //clear data validation
@@ -432,29 +432,34 @@ function prefillForm(){
 
   }
 
-  var shortened = shorten(urls, "SHORT")
   var out = []
-  for each (var link in shortened){
-    if(link.error){
-      out.push(["Error"])
-    }else{
-      out.push([link])
-    }
-
-  }
-
   var outputRange = currentSheet.getRange(3, (selectedQs.length + 1), currentSheet.getLastRow()-2)
 
+  if(shortenType == "noshort"){
+    for each (var link in urls){
+      out.push([link])
+    }
+    setProp("shortenedUrls", urls.join("<>"))
+  }else{
 
+    if(shortenType=="short"){
+      var shortened = shorten(urls, "SHORT")
+    }else{
+      var shortened = shorten(urls, "UNGUESSABLE")
+    }
+    for each (var link in shortened){
+      if(link.error){
+        out.push(["Error"])
+      }else{
+        out.push([link])
+      }
+    }
+    console.log(shortened)
+    setProp("shortenedUrls", shortened.join("<>"))
+  }
 
-  console.log(shortened)
   outputRange.setValues(out)
   setProp("prefillStatus", "true")
-
-
-  setProp("shortenedUrls", shortened.join("<>"))
-
-
 
   //urls.push(shorten([repairFormUrl(url)], "UNGUESSABLE"))
 }
