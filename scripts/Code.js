@@ -305,6 +305,7 @@ function prefillForm(){
   clearProp("prefillStatus")
   clearProp("printableColumns")
   clearProp("printStatus")
+  clearProp("printSheet")
 
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   var currentSheet = getSheetById(parseInt(getProp("sheetId"), 10))
@@ -327,7 +328,7 @@ function prefillForm(){
     currentSheet.insertColumnAfter(currentSheet.getMaxColumns()).setColumnWidth(currentSheet.getMaxColumns(), 170)
     currentSheet.getRange(1, currentSheet.getMaxColumns()).setValue("Shortened Links")
   }
-  
+
   //clear data validation
   currentSheet.getRange(3, (selectedQs.length + 1), currentSheet.getMaxRows()-2).setDataValidation(null)
 
