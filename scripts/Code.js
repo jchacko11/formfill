@@ -423,6 +423,7 @@ function prefillForm(shortenType){
           }
         }catch(e){
           console.error(e)
+          currentSheet.getRange(i+3, j+1).setNote(e)
         }
       }else{
         console.log("Skipped " + currentItem.getTitle())
