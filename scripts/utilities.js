@@ -1,11 +1,3 @@
-function createItemResponse(){
-
-}
-
-//parse string array to int array
-function numArray(){
-}
-
 function repairFormUrl( url ) {
   return url.replace(
     /(entry\.\d{9})([=+,0-9a-zA-Z()]+)(&\1)([=+,0-9a-zA-Z()]+)/g,
@@ -37,12 +29,13 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
+//clear document properties, reset
 function clearDocProperties(){
   PropertiesService.getDocumentProperties().deleteAllProperties();
   showSidebar();
 }
 
-//is the user ready to create newSheet()
+//check user ready state
 function isReady(){
   var formName = getProp("formName")
   if(formName) {
@@ -74,6 +67,7 @@ function truncate(input, maxlength) {
       return input;
 };
 
+//get a 'random' number based on time in ms
 function randTime(){
   var d = new Date();
   var n = d.getTime();
