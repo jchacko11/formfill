@@ -114,7 +114,7 @@ function newSheet() {
   var form = FormApp.openById(getProp("formId"))
   for(var i = 0; i < selectedQs.length; i++){
     var currentItem = form.getItemById(parseInt(selectedQsId[i], 10))
-    if(currentItem.getType() != FormApp.ItemType.DATE && currentItem.getType() && FormApp.ItemType.DATETIME && currentItem.getType() != FormApp.ItemType.DURATION && currentItem.getType() != FormApp.ItemType.TIME){
+    if(currentItem.getType() != FormApp.ItemType.DATE && currentItem.getType() != FormApp.ItemType.DATETIME && currentItem.getType() != FormApp.ItemType.DURATION && currentItem.getType() != FormApp.ItemType.TIME){
       rangey.setNumberFormat('@STRING@');
     }
 
@@ -405,8 +405,14 @@ function prefillForm(shortenType){
               item = currentItem.asTimeItem();
               //if (typeof resp !== 'string')
               //  resp = resp.join(':');      // Convert array to Colon SV
-              resp = resp.split(/( *: *)/g);   // Convert Colon SV to array
-              response.withItemResponse(item.createResponse(resp[0], resp[2]))
+              //resp = resp.split(/( *: *)/g);   // Convert Colon SV to array
+              //resp = new Date( resp );
+              //resp = new Date( resp );
+              console.error(resp.toString())
+              resp.setHours(resp.getHours() - 6);
+
+              console.error("Time: " + resp.getUTCHours() + ":" + resp.getUTCMinutes())
+              response.withItemResponse(item.createResponse(resp.getUTCHours(), resp.getUTCMinutes()))
               break;
             default:
               item = null;  // Not handling GRID, IMAGE, PAGE_BREAK, SECTION_HEADER
