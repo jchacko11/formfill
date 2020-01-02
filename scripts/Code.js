@@ -112,10 +112,19 @@ function newSheet() {
 
   var rangey = currentSheet.getRange(3, 1, currentSheet.getMaxRows()-2)
   var form = FormApp.openById(getProp("formId"))
+
   for(var i = 0; i < selectedQs.length; i++){
     var currentItem = form.getItemById(parseInt(selectedQsId[i], 10))
     if(currentItem.getType() != FormApp.ItemType.DATE && currentItem.getType() != FormApp.ItemType.DATETIME && currentItem.getType() != FormApp.ItemType.DURATION && currentItem.getType() != FormApp.ItemType.TIME){
       rangey.setNumberFormat('@STRING@');
+    }else if (currentItem.getType() == FormApp.ItemType.DATE) {
+      rangey.setNumberFormat('m/d/yyyy');
+    }else if (currentItem.getType() == FormApp.ItemType.DATETIME) {
+      rangey.setNumberFormat('m"/"d"/"yyyy" "h":"mm" "am/pm');
+    }else if (currentItem.getType() == FormApp.ItemType.DURATION) {
+      rangey.setNumberFormat('[h]:mm:ss');
+    }else if (currentItem.getType() == FormApp.ItemType.TIME) {
+      rangey.setNumberFormat('h:mm am/pm');
     }
 
     if(currentItem.getType() == FormApp.ItemType.MULTIPLE_CHOICE){
@@ -382,18 +391,19 @@ function prefillForm(shortenType){
               break;
             case FormApp.ItemType.DATETIME:
               item = currentItem.asDateTimeItem();
-              resp = new Date( resp );
-              resp.setHours(resp.getHours() - 6);
+              //var offset = resp.getTimezoneOffset()/60;
+              //resp.setHours(resp.getHours() - offset);
+              console.log(resp.toString());
+              resp = new Date(resp)
+
               response.withItemResponse(item.createResponse(resp))
               break;
             case FormApp.ItemType.DURATION:
               item = currentItem.asDurationItem();
-              //if (typeof resp !== 'string')
-              //  resp = resp.join(':');      // Convert array to Colon SV
-              console.log("Duration Item")
-              resp = resp.split(/( *: *)/g);   // Convert Colon SV to array
-              console.log(resp)
-              response.withItemResponse(item.createResponse(resp[0], resp[2], resp[4]))
+
+              console.error(resp.toString())
+              console.log("Duration: " + resp.getUTCHours() + ":" + resp.getUTCMinutes() + ":" + resp.getUTCSeconds())
+              response.withItemResponse(item.createResponse(resp.getUTCHours(), resp.getUTCMinutes(), resp.getUTCSeconds()))
               break;
             case FormApp.ItemType.SCALE:
               item = currentItem.asScaleItem();
@@ -402,14 +412,8 @@ function prefillForm(shortenType){
               break;
             case FormApp.ItemType.TIME:
               item = currentItem.asTimeItem();
-              //if (typeof resp !== 'string')
-              //  resp = resp.join(':');      // Convert array to Colon SV
-              //resp = resp.split(/( *: *)/g);   // Convert Colon SV to array
-              //resp = new Date( resp );
-              //resp = new Date( resp );
-              console.error(resp.toString())
-              resp.setHours(resp.getHours() - 6);
 
+              console.error(resp.toString())
               console.error("Time: " + resp.getUTCHours() + ":" + resp.getUTCMinutes())
               response.withItemResponse(item.createResponse(resp.getUTCHours(), resp.getUTCMinutes()))
               break;
