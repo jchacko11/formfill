@@ -393,8 +393,8 @@ function prefillForm(shortenType){
               break;
             case FormApp.ItemType.DATE:
               item = currentItem.asDateItem();
-              resp = new Date( resp );
-              resp.setDate(resp.getDate());
+              //resp = new Date( resp );
+              //resp.setDate(resp.getDate());
               response.withItemResponse(item.createResponse(resp))
               break;
             case FormApp.ItemType.DATETIME:
@@ -402,7 +402,7 @@ function prefillForm(shortenType){
               //var offset = resp.getTimezoneOffset()/60;
               //resp.setHours(resp.getHours() - offset);
               console.log(resp.toString());
-              resp = new Date(resp)
+              //resp = new Date(resp)
 
               response.withItemResponse(item.createResponse(resp))
               break;
@@ -431,7 +431,38 @@ function prefillForm(shortenType){
           }
         }catch(e){
           console.error(e)
-          currentSheet.getRange(i+3, j+1).setNote(e)
+          var userError = e.toString();
+          switch(currentItem.getType()){
+            case FormApp.ItemType.LIST:
+              userError = userError.replace("Exception: ", "")
+              break;
+            case FormApp.ItemType.MULTIPLE_CHOICE:
+              userError = userError.replace("Exception: ", "")
+              break;
+            case FormApp.ItemType.CHECKBOX:
+              userError = userError.replace("Exception: ", "")
+              break;
+            case FormApp.ItemType.DATE:
+              userError = ("Invalid response. Make sure cell is formatted as date.")
+              break;
+            case FormApp.ItemType.DATETIME:
+              userError = ("Invalid response. Make sure cell is formatted as date time.")
+              break;
+            case FormApp.ItemType.DURATION:
+              userError = ("Invalid response. Make sure cell is formatted as duration.")
+              break;
+            case FormApp.ItemType.SCALE:
+              userError = ("Invalid response. Make sure value is within the bounds of the scale.")
+              break;
+            case FormApp.ItemType.TIME:
+              userError = ("Invalid response. Make sure cell is formatted as time.")
+              break;
+            default:
+              userError = ("Error")  // Not handling GRID, IMAGE, PAGE_BREAK, SECTION_HEADER
+              break;
+          }
+          currentSheet.getRange(i+3, j+1).setNote(userError)
+
         }
       }else{
         console.log("Skipped " + currentItem.getTitle())
