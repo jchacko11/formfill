@@ -341,10 +341,18 @@ function prefillForm(shortenType){
   currentSheet.getRange(3, (selectedQs.length + 1), currentSheet.getMaxRows()-2).setDataValidation(null)
 
   var range = currentSheet.getRange(1, 1, currentSheet.getLastRow(), selectedQs.length)
+  var outputRange = currentSheet.getRange(3, (selectedQs.length + 1), currentSheet.getLastRow()-2)
+
+  range.clearNote();
+  console.log(range.getNumberFormats())
+  outputRange.setBackground("white")
   //var outputRange = currentSheet.getRange("A14")
   var urls =[]
+  var lastRow = currentSheet.getLastRow();
 
-  for(var i = 0; i < currentSheet.getLastRow()-2; i++){
+  for(var i = 0; i < lastRow-2; i++){
+
+    currentSheet.getRange(i+3, selectedQs.length + 1).setValue("Working...").setBackground("#fce8b2")
     var userResponse = range.getValues()[i+2]
     console.log(userResponse)
     var response = form.createResponse()
@@ -435,15 +443,18 @@ function prefillForm(shortenType){
       console.log(url)
       urls.push(url)
       console.log("url pushed")
+      currentSheet.getRange(i+3, selectedQs.length + 1).setValue("Response Created").setBackground("#b7e1cd")
     }catch(e){
       console.log(e)
+      currentSheet.getRange(i+3, selectedQs.length + 1).setValue("Error").setBackground("#f4c7c3")
       urls.push("")
     }
 
   }
 
   var out = []
-  var outputRange = currentSheet.getRange(3, (selectedQs.length + 1), currentSheet.getLastRow()-2)
+
+  outputRange.clearNote();
 
   if(shortenType == "noshort"){
     for each (var link in urls){
