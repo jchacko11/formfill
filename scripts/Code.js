@@ -306,6 +306,9 @@ function prefillForm(shortenType){
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   var currentSheet = getSheetById(parseInt(getProp("sheetId"), 10))
 
+  var timeZone = spreadsheet.getSpreadsheetTimeZone()
+  spreadsheet.setSpreadsheetTimeZone("Etc/GMT")
+
   var protection = currentSheet.getProtections(SpreadsheetApp.ProtectionType.SHEET)[0];
   if(protection){
     protection.remove()
@@ -461,6 +464,7 @@ function prefillForm(shortenType){
   }
 
   outputRange.setValues(out)
+  spreadsheet.setSpreadsheetTimeZone(timeZone)
   setProp("prefillStatus", "true")
 
   //urls.push(shorten([repairFormUrl(url)], "UNGUESSABLE"))
