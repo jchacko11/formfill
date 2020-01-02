@@ -79,6 +79,15 @@ function getProp(property){
 function clearProp(property){
   var docProperties = PropertiesService.getDocumentProperties();
   if(docProperties){
-    var formId = docProperties.deleteProperty(property)
+    docProperties.deleteProperty(property)
+  }
+}
+
+function clearProps(properties){
+  var docProperties = PropertiesService.getDocumentProperties();
+  if(docProperties){
+    for each (var property in properties){
+      docProperties.deleteProperty(property)
+    }
   }
 }

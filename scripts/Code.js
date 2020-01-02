@@ -301,11 +301,7 @@ function main(){
 
 //TODO make split global var
 function prefillForm(shortenType){
-  clearProp("shortenedUrls")
-  clearProp("prefillStatus")
-  clearProp("printableColumns")
-  clearProp("printStatus")
-  clearProp("printSheet")
+  clearProps(["shortenedUrls", "prefillStatus", "printableColumns", "printStatus", "printSheet"])
 
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   var currentSheet = getSheetById(parseInt(getProp("sheetId"), 10))
