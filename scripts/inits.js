@@ -20,6 +20,7 @@ function onOpen(e) {
     .addItem('Launch', 'showSidebar')
     .addSeparator()
     .addItem('Select Questions', 'showPicker')
+    .addItem('Stop Prefilling', 'emergencyStop')
     .addItem('Reset', 'clearDocProperties')
     .addToUi();
 }
@@ -38,6 +39,7 @@ function onInstall(e) {
  * Opens a sidebar.
  */
 function showSidebar() {
+  //setProp("emergencyStop", 'false')
   var ui = HtmlService.createTemplateFromFile('stepper/stepper')
     .evaluate()
     .setTitle(SIDEBAR_TITLE)
@@ -49,6 +51,7 @@ function showSidebar() {
  * Opens a dialog.
  */
 function showPicker() {
+  //setProp("emergencyStop", 'false')
   var ui = HtmlService.createTemplateFromFile('picker/picker')
     .evaluate()
     .setWidth(800)
@@ -89,4 +92,8 @@ function initPicker() {
       hideTitle: true,
     }
   };
+}
+
+function emergencyStop(){
+  setProp("emergencyStop", 'true')
 }

@@ -151,6 +151,11 @@ function prefillForm(shortenType) {
   var lastRow = currentSheet.getLastRow();
 
   for (var i = 0; i < lastRow - 2; i++) {
+    if(getProp("emergencyStop") == 'true'){
+      setProp("emergencyStop", "false")
+      showSidebar()
+      return;
+    }
     //show user working status
     currentSheet.getRange(i + 3, selectedQs.length + 1).setValue("Working...").setBackground("#fce8b2")
 
