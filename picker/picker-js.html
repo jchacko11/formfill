@@ -11,7 +11,9 @@ $(function () {
 
 function openPicker() {
   google.script.run
-    .withFailureHandler(showError)
+    .withFailureHandler(function(){
+      showError("Error opening file picker")
+    })
     .withSuccessHandler(showFilePicker)
     .initPicker();
 }
@@ -72,6 +74,7 @@ function fileSelected(data) {
     $("#prefill").html("Pre-fill 0 fields");
   } else if (action == google.picker.Action.CANCEL) {
     //html.push("No file selected");
+    hideError()
   }
 }
 
@@ -83,6 +86,7 @@ function getItems(id) {
     })
     .withSuccessHandler(function (items) {
       $("#questions").empty();
+      hideError()
       if (items.length != 0) {
         var name;
         var id;
@@ -126,6 +130,7 @@ $('#questions').on('change', function () {
 });
 
 $('#prefill').click(function () {
+  hideError()
   materialLoading(true);
   $('#prefill').prop("disabled", true)
   $('#open').prop("disabled", true)
@@ -156,6 +161,8 @@ function showSidebar() {
   google.script.run
     .withSuccessHandler(function () {
       google.script.host.close();
+    }).withFailureHandler(function(){
+      showError("Error showing sidebar")
     })
     .showSidebar();
 }
@@ -165,18 +172,22 @@ function showTitle(title) {
     .withSuccessHandler(function (output) {
       document.getElementById("title").innerHTML = output;
     })
+    .withFailureHandler(function(){
+      showError("Error showing title")
+    })
     .sanitize(title)
 }
 
 function showError(error){
-  //TODO hide error
-  //TODO user friednly error for picker
   google.script.run
     .withSuccessHandler(function (output) {
       $("#error").show()
       $("#errorText").html(output)
     })
     .sanitize(error.toString());
+}
+function hideError(){
+  $("#error").hide()
 }
 
 </script>
