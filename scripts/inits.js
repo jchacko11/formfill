@@ -17,10 +17,10 @@ var RED_BUTTON = true;
 function onOpen(e) {
   SpreadsheetApp.getUi()
     .createAddonMenu()
-    .addItem('Manage Form Fill', 'showSidebar')
+    .addItem('Launch', 'showSidebar')
     .addSeparator()
-    .addItem('Choose File', 'showDialog')
-    .addItem('Reset Form Fill', 'clearDocProperties')
+    .addItem('Select Questions', 'showDialog')
+    .addItem('Reset', 'clearDocProperties')
     .addToUi();
 }
 
