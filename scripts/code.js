@@ -108,15 +108,38 @@ function newSheet() {
   }
 }
 
+function prefillRunner(shortenType){
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
+  var currentSheet = getSheetById(parseInt(getProp("sheetId"), 10))
+  var responses = currentSheet.getLastRow() - 2;
+  var i = 0;
+
+  //get selected questions and their ids
+  var selectedQsId = getProp("selectedQs").split(SPLIT)
+
+  //if Prefilled Links column doesn't exist, create it
+  if (selectedQsId.length == currentSheet.getMaxColumns()) {
+    currentSheet.insertColumnAfter(currentSheet.getMaxColumns()).setColumnWidth(currentSheet.getMaxColumns(), 170)
+    currentSheet.getRange(1, currentSheet.getMaxColumns()).setValue("Prefilled Links")
+  }else{
+    currentSheet.deleteColumn(currentSheet.getMaxColumns())
+    currentSheet.insertColumnAfter(currentSheet.getMaxColumns()).setColumnWidth(currentSheet.getMaxColumns(), 170)
+    currentSheet.getRange(1, currentSheet.getMaxColumns()).setValue("Prefilled Links")
+  }
+  //TODO show warning, will delete existing links
+  //TODO show do not delete columns message
+
+  while (i < responses) {
+    prefillForm(shortenType, i, 10)
+    //TODO change this in settings
+    i+=10;
+  }
+}
+
 function prefillForm(shortenType, startRow, maxRows) {
   clearProps(["shortenedUrls", "prefillStatus", "printableColumns", "printStatus", "printSheet"])
   if(!startRow) var startRow = 0;
-  if(!maxRows) var maxRows = 5;
-
-  if(startRow<20){
-    async prefillForm(shortenType, startRow+5, maxRows)
-  }
-
+  if(!maxRows) var maxRows = 10;
 
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   var currentSheet = getSheetById(parseInt(getProp("sheetId"), 10))
@@ -146,17 +169,11 @@ function prefillForm(shortenType, startRow, maxRows) {
   var selectedQs = getProp("selectedQsName").split(SPLIT)
   var selectedQsId = getProp("selectedQs").split(SPLIT)
 
-  //if Prefilled Links column doesn't exist, create it
-  if (selectedQsId.length == currentSheet.getMaxColumns()) {
-    currentSheet.insertColumnAfter(currentSheet.getMaxColumns()).setColumnWidth(currentSheet.getMaxColumns(), 170)
-    currentSheet.getRange(1, currentSheet.getMaxColumns()).setValue("Prefilled Links")
-  }
-
   //clear data validation
   currentSheet.getRange(3 + startRow, (selectedQs.length + 1), Math.min(currentSheet.getMaxRows() - 2 - startRow, maxRows)).setDataValidation(null)
 
   var range = currentSheet.getRange(1 + startRow, 1, Math.min(currentSheet.getLastRow() - startRow, maxRows + 2), selectedQs.length)
-  var outputRange = currentSheet.getRange(3 + startRow, (selectedQs.length + 1), Math.min(currentSheet.getLastRow() - 2, maxRows))
+  var outputRange = currentSheet.getRange(3 + startRow, (selectedQs.length + 1), Math.min(currentSheet.getLastRow() - 2 - startRow, maxRows))
   var rangeValues = range.getValues()
 
   //clear error notes and progress colors
@@ -164,7 +181,7 @@ function prefillForm(shortenType, startRow, maxRows) {
   outputRange.setBackground("white")
 
   var urls = []
-  var lastRow = Math.min(currentSheet.getLastRow() - 2, maxRows);
+  var lastRow = Math.min(currentSheet.getLastRow() - 2 - startRow, maxRows);
 
   for (var i = 0; i < lastRow; i++) {
     if(getProp("emergencyStop") == 'true'){
