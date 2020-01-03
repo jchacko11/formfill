@@ -167,13 +167,14 @@ function showTitle(title) {
     .sanitize(title)
 }
 
-function showError(e){
+function showError(error){
+  //TODO hide error
   google.script.run
     .withSuccessHandler(function (output) {
       $("#error").show()
-      $("#errorText").html(e)
+      $("#errorText").html(output)
     })
-    .sanitize(e)
+    .sanitize(error.toString());
 }
 
 </script>
