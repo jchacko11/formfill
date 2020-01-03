@@ -1,77 +1,23 @@
-//TODO: sanitize, withUser Object, margins, prevent overflows (ellipses), Display names of output sheets, error handling
+//list selectable questions (not video, image, etc.)
+function listQuestions(id) {
+  var form = FormApp.openById(id)
+  var items = form.getItems();
+  var output = [];
 
-/**
- * @OnlyCurrentDoc  Limits the script to only accessing the current spreadsheet.
- */
+  //if item is supported, push title and id to output
+  for (var i = 0; i < items.length; i++) {
+    var type = items[i].getType()
+    if (type != FormApp.ItemType.IMAGE && type != FormApp.ItemType.VIDEO && type != FormApp.ItemType.PAGE_BREAK && type != FormApp.ItemType.SECTION_HEADER && type != FormApp.ItemType.GRID && type != FormApp.ItemType.CHECKBOX_GRID) {
+      output.push([sanitize(items[i].getTitle()), (items[i].getId())]);
+    }
 
-var DIALOG_TITLE = 'Select Fields to Pre-fill';
-var SIDEBAR_TITLE = 'Form Fill';
-var SPLIT = "$$|$||$||$|$||$|||$$$$|$|"
-var RED_BUTTON = true;
-
-/**
- * Adds a custom menu with items to show the sidebar and dialog.
- *
- * @param {Object} e The event parameter for a simple onOpen trigger.
- */
-function onOpen(e) {
-  SpreadsheetApp.getUi()
-    .createAddonMenu()
-    .addItem('Manage Form Fill', 'showSidebar')
-    .addSeparator()
-    .addItem('Choose File', 'showDialog')
-    .addItem('Reset Form Fill', 'clearDocProperties')
-    .addToUi();
-}
-
-/**
- * Runs when the add-on is installed; calls onOpen() to ensure menu creation and
- * any other initializion work is done immediately.
- *
- * @param {Object} e The event parameter for a simple onInstall trigger.
- */
-function onInstall(e) {
-  onOpen(e);
-}
-
-/**
- * Opens a sidebar.
- */
-function showSidebar() {
-  var ui = HtmlService.createTemplateFromFile('stepper/stepper')
-    .evaluate()
-    .setTitle(SIDEBAR_TITLE)
-    .setSandboxMode(HtmlService.SandboxMode.IFRAME);
-  SpreadsheetApp.getUi().showSidebar(ui);
-}
-
-/**
- * Opens a dialog.
- */
-function showPicker() {
-  var ui = HtmlService.createTemplateFromFile('picker/picker')
-    .evaluate()
-    .setWidth(800)
-    .setHeight(525)
-    .setSandboxMode(HtmlService.SandboxMode.IFRAME);
-  SpreadsheetApp.getUi().showModalDialog(ui, DIALOG_TITLE);
-}
-
-/**
- * Opens a dialog.
- */
-function showChoosePrintables() {
-  var ui = HtmlService.createTemplateFromFile('choosePrintables/choosePrintables')
-    .evaluate()
-    .setWidth(800)
-    .setHeight(525)
-    .setSandboxMode(HtmlService.SandboxMode.IFRAME);
-  SpreadsheetApp.getUi().showModalDialog(ui, "Choose Printable Information");
+  }
+  return output;
 }
 
 //creates a new sheet with selected questions as column headers
 function newSheet() {
-  clearProp(["shortenedUrls", "prefillStatus", "printableColumns", "printStatus"])
+  clearProps(["shortenedUrls", "prefillStatus", "printableColumns", "printStatus"])
 
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   var currentSheet = spreadsheet.insertSheet()
@@ -159,128 +105,6 @@ function newSheet() {
     //move on to next column
     rangey = rangey.offset(0, 1)
   }
-}
-
-function createPrintables() {
-
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
-  var currentSheet = spreadsheet.insertSheet()
-  setProp("printSheet", currentSheet.getSheetId().toFixed())
-  var shortenedUrls = getProp("shortenedUrls").split("<>")
-
-  //name current sheet, if already taken, and a random number to it
-  try {
-    currentSheet.setName(truncate(getProp("formName"), 25) + " Printables")
-  } catch (e) {
-    currentSheet.setName(truncate(getProp("formName"), 20) + " Printables " + randTime())
-  }
-
-  //delete extraneous rows and columns
-  currentSheet.deleteColumns(3, currentSheet.getMaxColumns() - 2)
-  currentSheet.deleteRows(shortenedUrls.length, currentSheet.getMaxRows() - shortenedUrls.length)
-
-  //set row and column sizes
-  currentSheet.setRowHeights(1, currentSheet.getMaxRows(), 300)
-  currentSheet.setColumnWidth(1, 300).setColumnWidth(2, 425)
-
-  var range1 = currentSheet.getRange(1, 1, currentSheet.getMaxRows())
-  var range2 = range1.offset(0, 1)
-  var qrCodes = [];
-
-  for each (var link in shortenedUrls) {
-    console.info(link)
-    console.info(link.error)
-    if (link.error || link == '[object Object]') {
-      //show error image
-      qrCodes.push(['=IMAGE("https://developers.google.com/maps/documentation/maps-static/images/error-image-generic.png")'])
-    } else {
-      //formula to show qr code
-      qrCodes.push(['=IMAGE("https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=' + link + '")'])
-    }
-  }
-  range1.setFormulas(qrCodes)
-
-  //vars to help build formulas
-  var sheetName = getSheetById(parseInt(getProp("sheetId"), 10)).getName();
-  sheetName = "'" + sheetName + "'!"
-  var item1 = 'Indirect("'
-  var item2 = '", false)'
-  var char = ", char(10)"
-
-  try {
-    var selected = getProp("printableColumns").split(SPLIT);
-    console.log(parseInt(selected[0], 10))
-    console.log(parseInt(selected[0], 10) - 1)
-
-    //build formulas for data column of printables
-    var final;
-    switch (selected.length) {
-      case 1:
-        final = "Concatenate(" + item1 + sheetName + "R[2]C[" + (parseInt(selected[0], 10) - 1) + "]" + item2 + ")";
-        break;
-      case 2:
-        final = "Concatenate(" + item1 + sheetName + "R[2]C[" + (parseInt(selected[0], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[1], 10) - 1) + "]" + item2 + ")"
-        break;
-      case 3:
-        final = "Concatenate(" + item1 + sheetName + "R[2]C[" + (parseInt(selected[0], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[1], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[2], 10) - 1) + "]" + item2 + ")"
-        break;
-      case 4:
-        final = "Concatenate(" + item1 + sheetName + "R[2]C[" + (parseInt(selected[0], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[1], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[2], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[3], 10) - 1) + "]" + item2 + ")"
-        break;
-      case 5:
-        final = "Concatenate(" + item1 + sheetName + "R[2]C[" + (parseInt(selected[0], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[1], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[2], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[3], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[4], 10) - 1) + "]" + item2 + ")"
-        break;
-      default:
-        break;
-    }
-
-    //set data and formatting second column
-    range2.setFormula(final)
-    range2.setFontSize(24)
-    range2.setWrapStrategy(SpreadsheetApp.WrapStrategy.WRAP).setVerticalAlignment("middle")
-  } catch (e) {
-    console.error(e)
-  }
-  setProp('printStatus', 'true')
-}
-
-//https://ctrlq.org/code/20393-google-file-picker-example
-function initPicker() {
-  return {
-    locale: 'en',
-    token: ScriptApp.getOAuthToken(),
-    origin: "https://script.google.com",
-    developerKey: PropertiesService.getScriptProperties().getProperty("devKey1"),
-    dialogDimensions: {
-      width: 700,
-      height: 425
-    },
-    picker: {
-      viewMode: "LIST",
-      mineOnly: true,
-      multiselectEnabled: false,
-      allowFolderSelect: false,
-      navhidden: true,
-      hideTitle: true,
-    }
-  };
-}
-
-//list selectable questions (not video, image, etc.)
-function listQuestions(id) {
-  var form = FormApp.openById(id)
-  var items = form.getItems();
-  var output = [];
-
-  //if item is supported, push title and id to output
-  for (var i = 0; i < items.length; i++) {
-    var type = items[i].getType()
-    if (type != FormApp.ItemType.IMAGE && type != FormApp.ItemType.VIDEO && type != FormApp.ItemType.PAGE_BREAK && type != FormApp.ItemType.SECTION_HEADER && type != FormApp.ItemType.GRID && type != FormApp.ItemType.CHECKBOX_GRID) {
-      output.push([sanitize(items[i].getTitle()), (items[i].getId())]);
-    }
-
-  }
-  return output;
 }
 
 function prefillForm(shortenType) {
@@ -492,6 +316,7 @@ function prefillForm(shortenType) {
   spreadsheet.setSpreadsheetTimeZone(timeZone)
   setProp("prefillStatus", "true")
 }
+
 //get the available spreadsheet columns to place on printables
 //returns string[]
 function getHeaders() {
@@ -510,4 +335,87 @@ function getHeaders() {
   } else {
     return ["Error"];
   }
+}
+
+function createPrintables() {
+
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
+  var currentSheet = spreadsheet.insertSheet()
+  setProp("printSheet", currentSheet.getSheetId().toFixed())
+  var shortenedUrls = getProp("shortenedUrls").split("<>")
+
+  //name current sheet, if already taken, and a random number to it
+  try {
+    currentSheet.setName(truncate(getProp("formName"), 25) + " Printables")
+  } catch (e) {
+    currentSheet.setName(truncate(getProp("formName"), 20) + " Printables " + randTime())
+  }
+
+  //delete extraneous rows and columns
+  currentSheet.deleteColumns(3, currentSheet.getMaxColumns() - 2)
+  currentSheet.deleteRows(shortenedUrls.length, currentSheet.getMaxRows() - shortenedUrls.length)
+
+  //set row and column sizes
+  currentSheet.setRowHeights(1, currentSheet.getMaxRows(), 300)
+  currentSheet.setColumnWidth(1, 300).setColumnWidth(2, 425)
+
+  var range1 = currentSheet.getRange(1, 1, currentSheet.getMaxRows())
+  var range2 = range1.offset(0, 1)
+  var qrCodes = [];
+
+  for each (var link in shortenedUrls) {
+    console.info(link)
+    console.info(link.error)
+    if (link.error || link == '[object Object]') {
+      //show error image
+      qrCodes.push(['=IMAGE("https://developers.google.com/maps/documentation/maps-static/images/error-image-generic.png")'])
+    } else {
+      //formula to show qr code
+      qrCodes.push(['=IMAGE("https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=' + link + '")'])
+    }
+  }
+  range1.setFormulas(qrCodes)
+
+  //vars to help build formulas
+  var sheetName = getSheetById(parseInt(getProp("sheetId"), 10)).getName();
+  sheetName = "'" + sheetName + "'!"
+  var item1 = 'Indirect("'
+  var item2 = '", false)'
+  var char = ", char(10)"
+
+  try {
+    var selected = getProp("printableColumns").split(SPLIT);
+    console.log(parseInt(selected[0], 10))
+    console.log(parseInt(selected[0], 10) - 1)
+
+    //build formulas for data column of printables
+    var final;
+    switch (selected.length) {
+      case 1:
+      final = "Concatenate(" + item1 + sheetName + "R[2]C[" + (parseInt(selected[0], 10) - 1) + "]" + item2 + ")";
+      break;
+      case 2:
+      final = "Concatenate(" + item1 + sheetName + "R[2]C[" + (parseInt(selected[0], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[1], 10) - 1) + "]" + item2 + ")"
+      break;
+      case 3:
+      final = "Concatenate(" + item1 + sheetName + "R[2]C[" + (parseInt(selected[0], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[1], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[2], 10) - 1) + "]" + item2 + ")"
+      break;
+      case 4:
+      final = "Concatenate(" + item1 + sheetName + "R[2]C[" + (parseInt(selected[0], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[1], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[2], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[3], 10) - 1) + "]" + item2 + ")"
+      break;
+      case 5:
+      final = "Concatenate(" + item1 + sheetName + "R[2]C[" + (parseInt(selected[0], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[1], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[2], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[3], 10) - 1) + "]" + item2 + char + ", " + item1 + sheetName + "R[2]C[" + (parseInt(selected[4], 10) - 1) + "]" + item2 + ")"
+      break;
+      default:
+      break;
+    }
+
+    //set data and formatting second column
+    range2.setFormula(final)
+    range2.setFontSize(24)
+    range2.setWrapStrategy(SpreadsheetApp.WrapStrategy.WRAP).setVerticalAlignment("middle")
+  } catch (e) {
+    console.error(e)
+  }
+  setProp('printStatus', 'true')
 }
