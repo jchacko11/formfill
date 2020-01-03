@@ -43,7 +43,6 @@ function isReady(){
     if(selectedQ){
      var data = selectedQ.split("$$|$||$||$|$||$|||$$$$|$|");
      if(data.length != 0){
-       //TODO status is 2 after finishing and restarting
        var prefilled = getProp("prefillStatus")
        if(prefilled == "true"){
          return 2;

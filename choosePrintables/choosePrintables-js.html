@@ -7,23 +7,9 @@ $(function () {
     $("#selected, #baseList").sortable({connectWith: ".connectedSortable"}).disableSelection();
 });
 
-/**
- * Displays the given status message in the dialog.
- *
- * @param {String} msg The status message to display.
- * @param {String} classId The message type (class id) that the message
- *   should be displayed as.
- */
- //TODO error handling
-function showStatus(msg, classId) {
-	$('#dialog-status').removeClass().html(msg);
-	if (classId) {
-		$('#dialog-status').addClass(classId);
-	}
-}
-
 function appendHeaders() {
 	materialLoading(true);
+  hideError();
 	google.script.run
 		.withSuccessHandler(
       function (msg, element) {
@@ -34,7 +20,7 @@ function appendHeaders() {
 			})
 		.withFailureHandler(
 			function (msg, element) {
-				showStatus(msg, 'error');
+				showError("Error retrieving column headers");
 				materialLoading(false);
 			})
 		.getHeaders();
@@ -44,11 +30,14 @@ function showSidebar() {
 	google.script.run
 		.withSuccessHandler(function () {
 			google.script.host.close();
-		})
+		}).withFailureHandler(function(){
+      showError("Error showing sidebar")
+    })
 		.showSidebar();
 }
 
 $("#submit").click(function () {
+  hideError();
 	materialLoading(true);
 	$("#submit").prop("disabled", true)
 
@@ -64,12 +53,14 @@ $("#submit").click(function () {
 				.withFailureHandler(function (e) {
           $("#submit").prop("disabled", false)
           materialLoading(false);
+          showError("Error creating printables")
         })
         .createPrintables()
 		})
 		.withFailureHandler(function (e) {
 			$("#submit").prop("disabled", false)
 			materialLoading(false);
+      showError("Error saving selected columns")
 		})
 		.setProp("printableColumns", output.join(SPLIT))
 });
@@ -81,4 +72,16 @@ $("#selected").on("sortreceive", function (event, ui) {
 	}
 });
 
+function showError(error){
+  google.script.run
+    .withSuccessHandler(function (output) {
+      $("#error").show()
+      $("#errorText").html(output)
+    })
+    .sanitize(error.toString());
+}
+
+function hideError(){
+  $("#error").hide()
+}
 </script>

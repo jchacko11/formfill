@@ -61,12 +61,10 @@
           google.script.run.showSidebar();
         })
         .withFailureHandler(function (msg, button) {
-          //TODO user friendly errors
           $(button).prop("disabled", false)
           materialLoading(false);
 
-          //TODO user friednly error
-          Stepper.error(msg)
+          Stepper.error("Prefill Error")
         })
         .withUserObject(this)
         .prefillForm(shortenType);
