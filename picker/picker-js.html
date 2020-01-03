@@ -6,6 +6,8 @@ var checked;
 var SPLIT = "$$|$||$||$|$||$|||$$$$|$|";
 
 $(function () {
+  $("#title").hide()
+  $("#questions").hide()
   openPicker();
 });
 
@@ -86,6 +88,7 @@ function getItems(id) {
     })
     .withSuccessHandler(function (items) {
       $("#questions").empty();
+      $("#questions").show()
       hideError()
       if (items.length != 0) {
         var name;
@@ -170,6 +173,7 @@ function showTitle(title) {
   google.script.run
     .withSuccessHandler(function (output) {
       document.getElementById("title").innerHTML = output;
+      $("#title").show()
     })
     .withFailureHandler(function(){
       showError("Error showing title")
@@ -181,7 +185,7 @@ function showError(error){
   google.script.run
     .withSuccessHandler(function (output) {
       $("#error").show()
-      $("#errorText").html(output)
+      $("#error").html(output)
     })
     .sanitize(error.toString());
 }

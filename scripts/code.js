@@ -17,6 +17,7 @@ function listQuestions(id) {
 
 //creates a new sheet with selected questions as column headers
 function newSheet() {
+  
   clearProps(["shortenedUrls", "prefillStatus", "printableColumns", "printStatus"])
 
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()

@@ -76,7 +76,7 @@ function showError(error){
   google.script.run
     .withSuccessHandler(function (output) {
       $("#error").show()
-      $("#errorText").html(output)
+      $("#error").html(output)
     })
     .sanitize(error.toString());
 }

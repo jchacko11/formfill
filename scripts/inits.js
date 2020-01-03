@@ -4,7 +4,7 @@
  * @OnlyCurrentDoc  Limits the script to only accessing the current spreadsheet.
  */
 
-var DIALOG_TITLE = 'Select Fields to Pre-fill';
+var DIALOG_TITLE = 'Select Questions';
 var SIDEBAR_TITLE = 'Form Fill';
 var SPLIT = "$$|$||$||$|$||$|||$$$$|$|"
 var RED_BUTTON = true;

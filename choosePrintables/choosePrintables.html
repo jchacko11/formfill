@@ -7,14 +7,7 @@
   </head>
   <body>
 
-    <button id="submit" class="action">Create Printables</button>
     <p>Drag the fields you would link to display with the printable QR codes.</p>
-
-    <div id="error" hidden>
-      <span id="errorText" class="error">Error</span>
-      <br>
-      <br>
-    </div>
 
     <div class="mdl-grid">
       <div class="mdl-cell"><h3>Selected Information (Max 5 Fields)</h3></div>
@@ -25,6 +18,10 @@
       <div class="mdl-cell"><ul id="baseList" class="connectedSortable"></ul></div>
     </div>
 
+    <p id="error" class="error" hidden>Error</p>
+
+    <button id="submit" class="action">Create Printables</button>
+    <button id="cancel" type="button" onclick="google.script.host.close()">Cancel</button>
     <!-- Use a templated HTML printing scriptlet to import JavaScript. -->
     <?!= HtmlService.createHtmlOutputFromFile('imports').getContent(); ?>
     <?!= HtmlService.createHtmlOutputFromFile('choosePrintables/choosePrintables-js').getContent(); ?>
