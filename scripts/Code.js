@@ -96,10 +96,11 @@ function newSheet() {
   currentSheet.hideRows(2)
   currentSheet.setFrozenRows(2)
   var values = [selectedQs, selectedQsId]
+  console.log(values)
   range.setFontWeight("bold").setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP).setValues(values)
 
   //delete extraneous rows and columns
-  currentSheet.deleteColumns(selectedQs.length, currentSheet.getMaxColumns() - (selectedQs.length))
+  currentSheet.deleteColumns(selectedQs.length + 1, currentSheet.getMaxColumns() - (selectedQs.length))
   currentSheet.deleteRows(200, currentSheet.getMaxRows() - 200)
 
   //protect range
