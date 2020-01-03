@@ -36,6 +36,7 @@ function clearDocProperties() {
 }
 
 //check user ready state
+//TODO remove 3 option
 function isReady(){
   var formName = getProp("formName")
   if(formName) {
