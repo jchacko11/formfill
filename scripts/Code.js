@@ -7,6 +7,8 @@
 var DIALOG_TITLE = 'Select Fields to Pre-fill';
 var SIDEBAR_TITLE = 'Form Fill';
 var SPLIT = "$$|$||$||$|$||$|||$$$$|$|"
+var RED_BUTTON = true;
+
 /**
  * Adds a custom menu with items to show the sidebar and dialog.
  *
