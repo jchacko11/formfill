@@ -2,7 +2,7 @@
 
 <script>
 (function () {
-  $(window).load(function() {
+  window.addEventListener('load', function () {
     var selector = '.mdl-stepper#stepper-linear';
     // Select stepper container element
     var stepperElement = document.querySelector(selector);
@@ -25,6 +25,7 @@
     google.script.run
       .withSuccessHandler(
         function (msg, element) {
+          console.log(msg)
           // move on to next step according to ready state
           if (msg == 1) {
             Stepper.next();
@@ -55,6 +56,7 @@
         function (msg, element) {
           // Respond to failure conditions here.
           //TODO error handling
+          console.log(msg)
         })
       .isReady();
 
@@ -89,5 +91,6 @@
         Stepper.back();
       });
     }
-});
+  });
+})();
 </script>
