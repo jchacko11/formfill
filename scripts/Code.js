@@ -128,7 +128,7 @@ function newSheet() {
     //add in cell dropdown menu for multiple choice items
     if (currentItem.getType() == FormApp.ItemType.MULTIPLE_CHOICE) {
       var choiceOptions = [];
-      for each(var item in currentItem.asMultipleChoiceItem().getChoices()) {
+      for each (var item in currentItem.asMultipleChoiceItem().getChoices()) {
         choiceOptions.push(item.getValue())
       }
       var multipleChoiceRule = SpreadsheetApp.newDataValidation().requireValueInList(choiceOptions).build();
@@ -138,7 +138,7 @@ function newSheet() {
     //add in cell dropdown menu for list items
     if (currentItem.getType() == FormApp.ItemType.LIST) {
       var choiceOptions = [];
-      for each(var item in currentItem.asListItem().getChoices()) {
+      for each (var item in currentItem.asListItem().getChoices()) {
         choiceOptions.push(item.getValue())
       }
       var listRule = SpreadsheetApp.newDataValidation().requireValueInList(choiceOptions).build();
@@ -184,7 +184,7 @@ function createPrintables() {
   var range2 = range1.offset(0, 1)
   var qrCodes = [];
 
-  for each(var link in shortenedUrls) {
+  for each (var link in shortenedUrls) {
     console.info(link)
     console.info(link.error)
     if (link.error || link == '[object Object]') {
@@ -319,29 +319,29 @@ function prefillForm(shortenType) {
   range.clearNote();
   outputRange.setBackground("white")
 
-  var urls =[]
+  var urls = []
   var lastRow = currentSheet.getLastRow();
 
-  for(var i = 0; i < lastRow-2; i++){
+  for (var i = 0; i < lastRow - 2; i++) {
     //show user working status
-    currentSheet.getRange(i+3, selectedQs.length + 1).setValue("Working...").setBackground("#fce8b2")
+    currentSheet.getRange(i + 3, selectedQs.length + 1).setValue("Working...").setBackground("#fce8b2")
 
     //get response row
-    var userResponse = range.getValues()[i+2]
+    var userResponse = range.getValues()[i + 2]
 
     var response = form.createResponse()
 
     //https://stackoverflow.com/a/26395487/1677912
-    for(var j = 0; j < selectedQs.length; j++){
+    for (var j = 0; j < selectedQs.length; j++) {
       //get response from row
       var resp = userResponse[j];
       var currentItem = form.getItemById(parseInt(selectedQsId[j], 10))
       console.log("Question Title: " + currentItem.getTitle())
-      if(resp){
-        try{
+      if (resp) {
+        try {
           console.log("Response: " + resp)
           //create responses
-          switch(currentItem.getType()){
+          switch (currentItem.getType()) {
             case FormApp.ItemType.TEXT:
               var item = currentItem.asTextItem();
               response.withItemResponse(item.createResponse(resp))
@@ -363,8 +363,8 @@ function prefillForm(shortenType) {
               // In a form submission event, resp is an array, containing CSV strings. Join into 1 string.
               // In spreadsheet, just CSV string. Convert to array of separate choices, ready for createResponse().
               if (typeof resp !== 'string')
-                resp = resp.join(',');      // Convert array to CSV
-              resp = resp.split(/ *, */g);   // Convert CSV to array
+                resp = resp.join(','); // Convert array to CSV
+              resp = resp.split(/ *, */g); // Convert CSV to array
               response.withItemResponse(item.createResponse(resp))
               break;
             case FormApp.ItemType.DATE:
@@ -395,14 +395,14 @@ function prefillForm(shortenType) {
               response.withItemResponse(item.createResponse(resp.getUTCHours(), resp.getUTCMinutes()))
               break;
             default:
-              item = null;  // Not handling GRID, IMAGE, PAGE_BREAK, SECTION_HEADER
+              item = null; // Not handling GRID, IMAGE, PAGE_BREAK, SECTION_HEADER
               break;
           }
-        }catch(e){
+        } catch (e) {
           console.error(e)
           var userError = e.toString();
           //create user friendly errors
-          switch(currentItem.getType()){
+          switch (currentItem.getType()) {
             case FormApp.ItemType.LIST:
               userError = userError.replace("Exception: ", "")
               break;
@@ -428,27 +428,27 @@ function prefillForm(shortenType) {
               userError = ("Invalid response. Make sure cell is formatted as time.")
               break;
             default:
-              userError = ("Error")  // Not handling GRID, IMAGE, PAGE_BREAK, SECTION_HEADER
+              userError = ("Error") // Not handling GRID, IMAGE, PAGE_BREAK, SECTION_HEADER
               break;
           }
           //cell specific error
-          currentSheet.getRange(i+3, j+1).setNote(userError)
+          currentSheet.getRange(i + 3, j + 1).setNote(userError)
 
         }
-      }else{
+      } else {
         console.log("Skipped " + currentItem.getTitle())
       }
 
     }
-    try{
+    try {
       var url = response.toPrefilledUrl();
       console.log(url)
       urls.push(url)
       console.log("url pushed")
-      currentSheet.getRange(i+3, selectedQs.length + 1).setValue("Response Created").setBackground("#b7e1cd")
-    }catch(e){
+      currentSheet.getRange(i + 3, selectedQs.length + 1).setValue("Response Created").setBackground("#b7e1cd")
+    } catch (e) {
       console.log(e)
-      currentSheet.getRange(i+3, selectedQs.length + 1).setValue("Error").setBackground("#f4c7c3")
+      currentSheet.getRange(i + 3, selectedQs.length + 1).setValue("Error").setBackground("#f4c7c3")
       urls.push("")
     }
 
@@ -465,17 +465,17 @@ function prefillForm(shortenType) {
       }
     }
     setProp("shortenedUrls", urls.join("<>"))
-  }else{
+  } else {
     //bulk shorten using SHORT or UNGUSSABLE
-    if(shortenType=="short"){
+    if (shortenType == "short") {
       var shortened = shorten(urls, "SHORT")
-    }else{
+    } else {
       var shortened = shorten(urls, "UNGUESSABLE")
     }
-    for each (var link in shortened){
-      if(link.error){
+    for each (var link in shortened) {
+      if (link.error) {
         out.push(["Error"])
-      }else{
+      } else {
         out.push([link])
       }
     }
@@ -489,23 +489,22 @@ function prefillForm(shortenType) {
   spreadsheet.setSpreadsheetTimeZone(timeZone)
   setProp("prefillStatus", "true")
 }
-
 //get the available spreadsheet columns to place on printables
 //returns string[]
-function getHeaders(){
+function getHeaders() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   var currentSheet = getSheetById(parseInt(getProp("sheetId"), 10))
-  if(currentSheet){
+  if (currentSheet) {
     var range = currentSheet.getRange(1, 1, 1, currentSheet.getMaxColumns())
     var headers = range.getValues()[0];
     var out = [];
 
-    for each (var header in headers){
+    for each(var header in headers) {
       out.push(sanitize(header))
     }
 
     return out;
-  }else{
+  } else {
     return ["Error"];
   }
 }
