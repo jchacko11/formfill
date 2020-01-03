@@ -110,6 +110,13 @@ function newSheet() {
 
 function prefillForm(shortenType, startRow, maxRows) {
   clearProps(["shortenedUrls", "prefillStatus", "printableColumns", "printStatus", "printSheet"])
+  if(!startRow) var startRow = 0;
+  if(!maxRows) var maxRows = 5;
+
+  if(startRow<20){
+    async prefillForm(shortenType, startRow+5, maxRows)
+  }
+
 
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   var currentSheet = getSheetById(parseInt(getProp("sheetId"), 10))
