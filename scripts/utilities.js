@@ -36,7 +36,6 @@ function clearDocProperties() {
 }
 
 //check user ready state
-//TODO remove 3 option
 function isReady(){
   var formName = getProp("formName")
   if(formName) {
@@ -47,12 +46,7 @@ function isReady(){
        //TODO status is 2 after finishing and restarting
        var prefilled = getProp("prefillStatus")
        if(prefilled == "true"){
-         var print = getProp("printStatus")
-         if(print){
-           return 3;
-         }else{
-           return 2;
-         }
+         return 2;
        }else{
          return 1;
        }

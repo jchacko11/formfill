@@ -34,11 +34,6 @@
             Stepper.next();
             Stepper.next();
           }
-          if (msg == 3) {
-            Stepper.next();
-            Stepper.next();
-            Stepper.next();
-          }
 
           //enable buttons according to ready state
           if(msg >= 1){
@@ -46,10 +41,6 @@
           }
           if(msg >= 2){
             $("#continue2").prop("disabled", false);
-          }
-          if(msg >= 3){
-            $("#continue3").prop("disabled", false);
-
           }
         })
       .withFailureHandler(
