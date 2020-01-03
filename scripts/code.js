@@ -142,6 +142,7 @@ function prefillForm(shortenType) {
 
   var range = currentSheet.getRange(1, 1, currentSheet.getLastRow(), selectedQs.length)
   var outputRange = currentSheet.getRange(3, (selectedQs.length + 1), currentSheet.getLastRow() - 2)
+  var rangeValues = range.getValues()
 
   //clear error notes and progress colors
   range.clearNote();
@@ -156,11 +157,16 @@ function prefillForm(shortenType) {
       showSidebar()
       return;
     }
+
     //show user working status
     currentSheet.getRange(i + 3, selectedQs.length + 1).setValue("Working...").setBackground("#fce8b2")
 
+    //immediately display changes to the spreadsheet
+    SpreadsheetApp.flush();
+
     //get response row
-    var userResponse = range.getValues()[i + 2]
+    var userResponse = rangeValues[i + 2]
+    //var userResponse = range.getValues()[i + 2]
 
     var response = form.createResponse()
 
@@ -169,10 +175,10 @@ function prefillForm(shortenType) {
       //get response from row
       var resp = userResponse[j];
       var currentItem = form.getItemById(parseInt(selectedQsId[j], 10))
-      console.log("Question Title: " + currentItem.getTitle())
+      //console.log("Question Title: " + currentItem.getTitle())
       if (resp) {
         try {
-          console.log("Response: " + resp)
+          //console.log("Response: " + resp)
           //create responses
           switch (currentItem.getType()) {
             case FormApp.ItemType.TEXT:
@@ -269,15 +275,15 @@ function prefillForm(shortenType) {
 
         }
       } else {
-        console.log("Skipped " + currentItem.getTitle())
+        //console.log("Skipped " + currentItem.getTitle())
       }
 
     }
     try {
       var url = response.toPrefilledUrl();
-      console.log(url)
+      //console.log(url)
       urls.push(url)
-      console.log("url pushed")
+      //console.log("url pushed")
       currentSheet.getRange(i + 3, selectedQs.length + 1).setValue("Response Created").setBackground("#b7e1cd")
     } catch (e) {
       console.log(e)

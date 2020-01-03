@@ -39,7 +39,7 @@ function onInstall(e) {
  * Opens a sidebar.
  */
 function showSidebar() {
-  //setProp("emergencyStop", 'false')
+  setProp("emergencyStop", 'false')
   var ui = HtmlService.createTemplateFromFile('stepper/stepper')
     .evaluate()
     .setTitle(SIDEBAR_TITLE)
