@@ -7,7 +7,7 @@
 var DIALOG_TITLE = 'Select Questions';
 var SIDEBAR_TITLE = 'Form Fill';
 var SPLIT = "$$|$||$||$|$||$|||$$$$|$|"
-var RED_BUTTON = true;
+var RED_BUTTON = false;
 
 /**
  * Adds a custom menu with items to show the sidebar and dialog.
@@ -19,7 +19,7 @@ function onOpen(e) {
     .createAddonMenu()
     .addItem('Launch', 'showSidebar')
     .addSeparator()
-    .addItem('Select Questions', 'showDialog')
+    .addItem('Select Questions', 'showPicker')
     .addItem('Reset', 'clearDocProperties')
     .addToUi();
 }
