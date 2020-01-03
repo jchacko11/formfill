@@ -108,12 +108,20 @@ function newSheet() {
   }
 }
 
-function prefillForm(shortenType) {
+function prefillForm(shortenType, startRow, maxRows) {
   clearProps(["shortenedUrls", "prefillStatus", "printableColumns", "printStatus", "printSheet"])
 
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   var currentSheet = getSheetById(parseInt(getProp("sheetId"), 10))
 
+  /*
+  if(!startRow) var startRow = 0;
+  if(!maxRows) var maxRows = 5;
+
+  if(startRow<20){
+    prefillForm(shortenType, startRow+5, maxRows)
+  }
+  */
   //temporarily change timezone to GMT
   var timeZone = spreadsheet.getSpreadsheetTimeZone()
   spreadsheet.setSpreadsheetTimeZone("Etc/GMT")
@@ -138,10 +146,10 @@ function prefillForm(shortenType) {
   }
 
   //clear data validation
-  currentSheet.getRange(3, (selectedQs.length + 1), currentSheet.getMaxRows() - 2).setDataValidation(null)
+  currentSheet.getRange(3 + startRow, (selectedQs.length + 1), Math.min(currentSheet.getMaxRows() - 2 - startRow, maxRows)).setDataValidation(null)
 
-  var range = currentSheet.getRange(1, 1, currentSheet.getLastRow(), selectedQs.length)
-  var outputRange = currentSheet.getRange(3, (selectedQs.length + 1), currentSheet.getLastRow() - 2)
+  var range = currentSheet.getRange(1 + startRow, 1, Math.min(currentSheet.getLastRow() - startRow, maxRows + 2), selectedQs.length)
+  var outputRange = currentSheet.getRange(3 + startRow, (selectedQs.length + 1), Math.min(currentSheet.getLastRow() - 2, maxRows))
   var rangeValues = range.getValues()
 
   //clear error notes and progress colors
@@ -149,9 +157,9 @@ function prefillForm(shortenType) {
   outputRange.setBackground("white")
 
   var urls = []
-  var lastRow = currentSheet.getLastRow();
+  var lastRow = Math.min(currentSheet.getLastRow() - 2, maxRows);
 
-  for (var i = 0; i < lastRow - 2; i++) {
+  for (var i = 0; i < lastRow; i++) {
     if(getProp("emergencyStop") == 'true'){
       setProp("emergencyStop", "false")
       showSidebar()
@@ -159,7 +167,7 @@ function prefillForm(shortenType) {
     }
 
     //show user working status
-    currentSheet.getRange(i + 3, selectedQs.length + 1).setValue("Working...").setBackground("#fce8b2")
+    currentSheet.getRange(i + 3 + startRow, selectedQs.length + 1).setValue("Working...").setBackground("#fce8b2")
 
     //immediately display changes to the spreadsheet
     SpreadsheetApp.flush();
@@ -271,7 +279,7 @@ function prefillForm(shortenType) {
               break;
           }
           //cell specific error
-          currentSheet.getRange(i + 3, j + 1).setNote(userError)
+          currentSheet.getRange(i + 3 + startRow, j + 1).setNote(userError)
 
         }
       } else {
@@ -284,10 +292,10 @@ function prefillForm(shortenType) {
       //console.log(url)
       urls.push(url)
       //console.log("url pushed")
-      currentSheet.getRange(i + 3, selectedQs.length + 1).setValue("Response Created").setBackground("#b7e1cd")
+      currentSheet.getRange(i + 3 + startRow, selectedQs.length + 1).setValue("Response Created").setBackground("#b7e1cd")
     } catch (e) {
       console.log(e)
-      currentSheet.getRange(i + 3, selectedQs.length + 1).setValue("Error").setBackground("#f4c7c3")
+      currentSheet.getRange(i + 3 + startRow, selectedQs.length + 1).setValue("Error").setBackground("#f4c7c3")
       urls.push("")
     }
 
