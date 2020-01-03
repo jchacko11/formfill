@@ -1,36 +1,27 @@
 <script>
+//global vars
+var formName;
+var formId;
+var checked;
+var SPLIT = "$$|$||$||$|$||$|||$$$$|$|";
 
 $(function () {
   openPicker();
 });
 
-
 function openPicker() {
   google.script.run
-    .withFailureHandler(showMessage)
+    .withFailureHandler(showError)
     .withSuccessHandler(showFilePicker)
     .initPicker();
 }
 
+//https://ctrlq.org/code/20393-google-file-picker-example
 function showFilePicker(config) {
-  //console.log(1)
   // Show all files in Google Drive for selection
   var view = new google.picker.DocsView(google.picker.ViewId.FORMS);
-  /*
-  view.setIncludeFolders(config.picker.includeFolders)
-    .setSelectFolderEnabled(config.picker.allowFolderSelect)
-    .setParent(config.parentFolder)
-  */
-
-  // Show file as a grid or list (compact)
-  //if (config.picker.viewMode === "GRID")
-  //view.setMode(google.picker.DocsViewMode.GRID);
-  //else
 
   view.setMode(google.picker.DocsViewMode.LIST);
-  //console.log(2)
-  if (config.picker.mimeTypes)
-    view.setMimeTypes(config.picker.mimeTypes);
 
   var picker = new google.picker.PickerBuilder()
     .addView(google.picker.ViewId.FORMS)
@@ -41,7 +32,7 @@ function showFilePicker(config) {
     .setOrigin(google.script.host.origin)
     .setSize(config.dialogDimensions.width - 2,
       config.dialogDimensions.height - 2);
-  //console.log(3)
+
   if (config.picker.hideTitle)
     picker.hideTitleBar();
 
@@ -57,11 +48,7 @@ function showFilePicker(config) {
     picker.enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
 
   picker.build().setVisible(true);
-
-
 }
-var formName;
-var formId;
 
 // Callback function
 function fileSelected(data) {
@@ -73,29 +60,19 @@ function fileSelected(data) {
     var documents = data[google.picker.Response.DOCUMENTS];
     formId = documents[0][google.picker.Document.ID];
     formName = documents[0][google.picker.Document.NAME];
-    getItems(formId)
 
-/*
-    google.script.run
-      .withFailureHandler(showMessage)
-      .withSuccessHandler(showFilePicker)
-      .setProp(, formId);
+    //list questions in form
+    getItems(formId);
 
-    google.script.run
-      .withFailureHandler(showMessage)
-      .withSuccessHandler(showFilePicker)
-      .setProp("", name);
-*/
+    //show form name
+    showTitle("Selected Form: " + (documents[0][google.picker.Document.NAME]));
 
-    showMessage("Selected Form: " + (documents[0][google.picker.Document.NAME]));
-    $("#prefill").prop("disabled", true)
-    $("#prefill").html("Pre-fill 0 fields")
+    //Reset prefill button state
+    $("#prefill").prop("disabled", true);
+    $("#prefill").html("Pre-fill 0 fields");
   } else if (action == google.picker.Action.CANCEL) {
     //html.push("No file selected");
   }
-
-
-
 }
 
 function getItems(id) {
@@ -104,38 +81,36 @@ function getItems(id) {
       showError("Error retrieving form questions")
       materialLoading(false);
     })
-    .withSuccessHandler(function (message) {
-      //showMessage(message)
-      //google.script.host.close();
+    .withSuccessHandler(function (items) {
       $("#questions").empty();
-      if (message.length != 0) {
-        //$("#questions").append("<h5>Which questions would you like to prefill?</h5>")
-        for (var i = 0; i < message.length; i++) {
-          console.log(message[i][0])
-          var name = message[i][0]
-          var id = message[i][1]
+      if (items.length != 0) {
+        var name;
+        var id;
+        for (var i = 0; i < items.length; i++) {
+          name = items[i][0]
+          id = items[i][1]
           $("#questions").append('<div><input type="checkbox" id="' + id + '" data-name="' + name + '" + name="' + id + '" value="' + id + '"><label for="' + id + '">' + name + '</label></div>')
         }
       } else {
         $("#questions").append("This form has no supported questions.")
       }
-      componentHandler.upgradeAllRegistered();
       materialLoading(false);
     })
     .listQuestions(id);
 }
 
-var checked;
 $('#questions').on('change', function () {
   checked = [];
   checked[0] = [];
   checked[1] = [];
 
+  //populate checked variable with selected questions
   $('#questions input:checked').each(function () {
     checked[0].push($(this).attr('name'));
     checked[1].push($(this).attr('data-name'))
   });
 
+  //update prefill button
   if (checked[0].length > 0) {
     $("#prefill").prop("disabled", false)
     if (checked[0].length == 1) {
@@ -148,7 +123,6 @@ $('#questions').on('change', function () {
     $("#prefill").html("Pre-fill " + checked[0].length + " fields")
   }
 
-  console.log(checked)
 });
 
 $('#prefill').click(function () {
@@ -158,24 +132,22 @@ $('#prefill').click(function () {
 
   google.script.run
     .withSuccessHandler(function () {
-      //google.script.host.close();
       google.script.run
         .withSuccessHandler(showSidebar)
         .withFailureHandler(function(e){
-          materialLoading(false);
-          showError("Error creating new sheet")
           $('#prefill').prop("disabled", false)
           $('#open').prop("disabled", false)
+          materialLoading(false);
+          showError("Error creating new sheet")
         })
         .newSheet()
     }).withFailureHandler(function (e) {
       $('#prefill').prop("disabled", false)
       $('#open').prop("disabled", false)
-      console.log("1: " + e)
       materialLoading(false);
       showError("Error saving selected information")
     })
-    .setProps(["selectedQs", "selectedQsName", "formId", "formName"], [checked[0].join("$$|$||$||$|$||$|||$$$$|$|"), checked[1].join("$$|$||$||$|$||$|||$$$$|$|"), formId, formName]);
+    .setProps(["selectedQs", "selectedQsName", "formId", "formName"], [checked[0].join(SPLIT), checked[1].join(SPLIT), formId, formName]);
 
 });
 
@@ -187,34 +159,21 @@ function showSidebar() {
     .showSidebar();
 }
 
-function showMessage(message) {
+function showTitle(title) {
   google.script.run
     .withSuccessHandler(function (output) {
-      document.getElementById("message").innerHTML = output;
+      document.getElementById("title").innerHTML = output;
     })
-    .sanitize(message)
-
+    .sanitize(title)
 }
 
 function showError(e){
-  $("#error").show()
-  $("#errorText").html(e)
-  console.log(e)
+  google.script.run
+    .withSuccessHandler(function (output) {
+      $("#error").show()
+      $("#errorText").html(e)
+    })
+    .sanitize(e)
 }
-
-function sanitize(input) {
-
-  return input.replace(/[&<>"'/]/ig, function (m) {
-    return {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#x27;',
-      "/": '&#x2F;',
-    }[m];
-  });
-}
-
 
 </script>

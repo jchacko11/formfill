@@ -30,7 +30,7 @@ function getRandomInt(max) {
 }
 
 //clear document properties, reset
-function clearDocProperties(){
+function clearDocProperties() {
   PropertiesService.getDocumentProperties().deleteAllProperties();
   showSidebar();
 }
@@ -61,24 +61,24 @@ function isReady(){
 }
 
 function truncate(input, maxlength) {
-   if (input.length > maxlength)
-      return input.substring(0, maxlength-3) + '...';
-   else
-      return input;
-};
+  if (input.length > maxlength)
+    return input.substring(0, maxlength - 3) + '...';
+  else
+    return input;
+}
 
 //get a 'random' number based on time in ms
-function randTime(){
+function randTime() {
   var d = new Date();
   var n = d.getTime();
-  return n-1576000000000;
+  return n - 1576000000000;
 }
 
 //gets all ints getween lower and upper bound inclusive
-function getIntsBetween(lower, upper){
+function getIntsBetween(lower, upper) {
   var list = [];
   for (var i = lower; i <= upper; i++) {
-      list.push(i);
+    list.push(i);
   }
   return list;
 }

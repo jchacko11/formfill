@@ -9,19 +9,20 @@
     <ul class="mdl-stepper mdl-stepper--linear" id="stepper-linear">
       <li class="mdl-step mdl-step--editable">
         <span class="mdl-step__label">
-                  <span class="mdl-step__title">
-                    <span class="mdl-step__title-text">Select Questions</span>
-        </span>
+          <span class="mdl-step__title">
+            <span class="mdl-step__title-text">Select Questions</span>
+          </span>
         </span>
         <div class="mdl-step__content">
-          <p>
-            Select a Google Form that you would like to use. If you don't have one in mind, <a href="https://forms.new">create a new Google Form</a> first.
-          </p>
-          <button class="" onclick="google.script.run.showPicker()" id="select">Select Form</button>
+
+          <p>Select a Google Form that you would like to use. If you don't have one in mind, <a href="https://forms.new">create a new Google Form</a> first.</p>
+          <button onclick="google.script.run.showPicker()" id="select">Select Form</button>
 
           <br>
           <br>
+
             <? var formName = getProp("formName")
+            var SPLIT = "$$|$||$||$|$||$|||$$$$|$|";
             if(formName) { ?>
               <strong><?= "Selected Form: " + truncate(formName, 30) ?></strong>
             <? }else{ ?>
@@ -30,8 +31,8 @@
             <ul class="hideoverflow">
               <? var selectedQ = getProp("selectedQsName");
                 if(selectedQ){
-                 var data = selectedQ.split("$$|$||$||$|$||$|||$$$$|$|");
-                 var dataId = getProp("selectedQs").split("$$|$||$||$|$||$|||$$$$|$|");
+                 var data = selectedQ.split(SPLIT);
+                 var dataId = getProp("selectedQs").split(SPLIT);
 
                  if(data.length == 0){ ?>
                   <li><strong><?= "No Questions in Form" ?></strong></li>
@@ -44,80 +45,76 @@
             </ul>
         </div>
         <div class="mdl-step__actions">
-          <button id="continue1" class="action" data-stepper-next disabled>
-                Continue
-              </button>
+          <button id="continue1" class="action" data-stepper-next disabled>Continue</button>
         </div>
       </li>
       <li class="mdl-step mdl-step--editable">
         <span class="mdl-step__label">
-              <span class="mdl-step__title">
-                <span class="mdl-step__title-text">Prefill Form</span>
+          <span class="mdl-step__title">
+            <span class="mdl-step__title-text">Prefill Form</span>
+          </span>
         </span>
-        </span>
+
         <div class="mdl-step__content">
 
-        <? var id = getProp("sheetId");
-        var sheet = getSheetById(parseInt(id, 10))
-        if(sheet){ ?>
+          <? var id = getProp("sheetId");
+          var sheet = getSheetById(parseInt(id, 10))
+          if(sheet){ ?>
 
-          <p>Prefill your data in the sheet:
-          <br>
-          <strong><?=sheet.getName()?></strong>
-          </p>
-        <? } ?>
+            <p>Prefill your data in the sheet:
+            <br>
+            <strong><?=sheet.getName()?></strong>
+            </p>
+          <? } ?>
 
-        <div>
-          <div class="bottom-6">
-            <input type="radio" name="shortenType" id="short" checked>
-            <label class="smalltext" for="short">Shorten Links (Short)</label>
+          <div>
+            <div class="bottom-6">
+              <input type="radio" name="shortenType" id="short" checked>
+              <label class="smalltext" for="short">Shorten Links (Short)</label>
+            </div>
+            <div class="bottom-6">
+              <input type="radio" name="shortenType" id="unguessable">
+              <label class="smalltext" for="unguessable">Shorten Links (Unguessable)</label>
+            </div>
+            <div class="bottom-10">
+              <input type="radio" name="shortenType" id="noshort">
+              <label class="smalltext" for="noshort">Don't Shorten Links</label>
+            </div>
           </div>
-          <div class="bottom-6">
-            <input type="radio" name="shortenType" id="unguessable">
-            <label class="smalltext" for="unguessable">Shorten Links (Unguessable)</label>
-          </div>
-          <div class="bottom-10">
-            <input type="radio" name="shortenType" id="noshort">
-            <label class="smalltext" for="noshort">Don't Shorten Links</label>
-          </div>
+
+          <button id="prefill" data-stepper-next>Prefill</button>
         </div>
 
-        <button id="prefill" class="right-pad float" data-stepper-next>
-                Prefill
-            </button>
-
-        </div>
         <div class="mdl-step__actions">
-          <button id="continue2" class="action" data-stepper-next disabled>
-                Continue
-              </button>
-          <button class="" data-stepper-back>
-                Back
-              </button>
+          <button id="continue2" class="action" data-stepper-next disabled>Continue</button>
+          <button data-stepper-back>Back</button>
         </div>
       </li>
+
       <li class="mdl-step mdl-step--editable mdl-step--optional">
         <span class="mdl-step__label">
-              <span class="mdl-step__title">
-                <span class="mdl-step__title-text">Create Printables</span>
-                <span class="mdl-step__title-message">Optional</span>
+          <span class="mdl-step__title">
+            <span class="mdl-step__title-text">Create Printables</span>
+            <span class="mdl-step__title-message">Optional</span>
+          </span>
         </span>
-        </span>
+
         <div class="mdl-step__content">
-        <p>
-          Choose information to be displayed with printable QR Codes.
-        </p>
-        <button class="" onclick="google.script.run.showChoosePrintables()">Choose info</button>
+        <p>Choose information to be displayed with printable QR Codes.</p>
+
+        <button onclick="google.script.run.showChoosePrintables()">Choose info</button>
 
         <ul class="hideoverflow">
-            <? var items = getHeaders()
-            if(items){
-                var prop = getProp("printableColumns");
-                if(prop){
-                var selected = prop.split(",");
-                  for (var i = 0; i < selected.length; i++) { ?>
-                    <li><?= items[selected[i]] ?></li>
-              <? } }}?>
+          <? var items = getHeaders()
+          var SPLIT = "$$|$||$||$|$||$|||$$$$|$|";
+
+          if(items){
+              var prop = getProp("printableColumns");
+              if(prop){
+              var selected = prop.split(SPLIT);
+                for (var i = 0; i < selected.length; i++) { ?>
+                  <li><?= items[selected[i]] ?></li>
+            <? } }}?>
         </ul>
 
         <? var id = getProp("printSheet");
@@ -131,15 +128,13 @@
         <? }?>
 
         </div>
+
         <div class="mdl-step__actions">
-          <button id="new" onclick="google.script.run.clearDocProperties()" class="create" data-stepper-next>
-                Reset
-              </button>
-          <button class="" data-stepper-back>
-                Back
-              </button>
+          <button id="new" onclick="google.script.run.clearDocProperties()" class="create" data-stepper-next>Reset</button>
+          <button data-stepper-back>Back</button>
         </div>
       </li>
+
     </ul>
 
     <?!= HtmlService.createHtmlOutputFromFile('imports').getContent(); ?>

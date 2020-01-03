@@ -2,7 +2,7 @@
 
 <script>
 (function () {
-  window.addEventListener('load', function () {
+  $(window).load(function() {
     var selector = '.mdl-stepper#stepper-linear';
     // Select stepper container element
     var stepperElement = document.querySelector(selector);
@@ -25,7 +25,7 @@
     google.script.run
       .withSuccessHandler(
         function (msg, element) {
-          // Respond to success conditions here.
+          // move on to next step according to ready state
           if (msg == 1) {
             Stepper.next();
           }
@@ -39,7 +39,7 @@
             Stepper.next();
           }
 
-          //disable buttons according to ready state
+          //enable buttons according to ready state
           if(msg >= 1){
             $("#continue1").prop("disabled", false);
           }
@@ -50,34 +50,29 @@
             $("#continue3").prop("disabled", false);
 
           }
-
-          console.log(msg)
         })
       .withFailureHandler(
         function (msg, element) {
           // Respond to failure conditions here.
-          console.log(msg)
+          //TODO error handling
         })
       .isReady();
 
     $("#prefill").click(function () {
-
-      var shortenType = $("input[name='shortenType']:checked").attr("id")
-
       $(this).prop("disabled", true)
       materialLoading(true);
+
+      var shortenType = $("input[name='shortenType']:checked").attr("id")
       google.script.run
-        .withSuccessHandler(function (msg, button) {
+        .withSuccessHandler(function () {
           google.script.run.showSidebar();
-          //Stepper.next();
-          //$(button).prop("disabled", false)
-          //$("#continue2").prop("disabled", false);
-          //materialLoading(false);
         })
         .withFailureHandler(function (msg, button) {
-          Stepper.error(msg)
+          //TODO user friendly errors
           $(button).prop("disabled", false)
           materialLoading(false);
+
+          Stepper.error(msg)
         })
         .withUserObject(this)
         .prefillForm(shortenType);
@@ -86,8 +81,7 @@
 
     for (var i = 0; i < steps.length; i++) {
       steps[i].addEventListener('onstepnext', function (e) {
-        // {element}.MaterialStepper.next() change the state of current step to "completed"
-        // and move one step forward.
+        // {element}.MaterialStepper.next() change the state of current step to "completed" and move one step forward.
         Stepper.next();
       });
       // When user clicks on [data-stepper-back] button of step.
@@ -95,19 +89,5 @@
         Stepper.back();
       });
     }
-
-    /*
-    // When all steps are completed this event is dispatched.
-    stepperElement.addEventListener('onsteppercomplete', function (e) {
-      var toast = document.querySelector('#snackbar-stepper-complete');
-      if (!toast) return;
-      toast.MaterialSnackbar.showSnackbar({
-        message: 'Stepper non-linear are completed',
-        timeout: 4000,
-        actionText: 'Ok'
-      });
-    });
-    */
-  });
-})();
+});
 </script>
