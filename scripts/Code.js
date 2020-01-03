@@ -456,9 +456,13 @@ function prefillForm(shortenType) {
 
   var out = []
 
-  if(shortenType == "noshort"){
-    for each (var link in urls){
-      out.push([link])
+  if (shortenType == "noshort") {
+    for each (var link in urls) {
+      if(link){
+        out.push([link])
+      }else{
+        out.push(['Error'])
+      }
     }
     setProp("shortenedUrls", urls.join("<>"))
   }else{
