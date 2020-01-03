@@ -152,6 +152,7 @@ $('#prefill').click(function () {
 });
 
 function showSidebar() {
+  //TODO error handling
   google.script.run
     .withSuccessHandler(function () {
       google.script.host.close();
@@ -169,6 +170,7 @@ function showTitle(title) {
 
 function showError(error){
   //TODO hide error
+  //TODO user friednly error for picker
   google.script.run
     .withSuccessHandler(function (output) {
       $("#error").show()
