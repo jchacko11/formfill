@@ -17,7 +17,7 @@ function listQuestions(id) {
 
 //creates a new sheet with selected questions as column headers
 function newSheet() {
-  
+
   clearProps(["shortenedUrls", "prefillStatus", "printableColumns", "printStatus"])
 
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
@@ -51,7 +51,7 @@ function newSheet() {
   currentSheet.deleteRows(200, currentSheet.getMaxRows() - 200)
 
   //protect range
-  var unprotectedRange = currentSheet.getRange(3, 1, currentSheet.getMaxRows() - 3, currentSheet.getMaxColumns())
+  var unprotectedRange = currentSheet.getRange(3, 1, currentSheet.getMaxRows() - 2, currentSheet.getMaxColumns())
   currentSheet.protect().setWarningOnly(true).setUnprotectedRanges([unprotectedRange])
 
   //get range of the first column of user input
