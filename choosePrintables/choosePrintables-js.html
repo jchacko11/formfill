@@ -28,7 +28,6 @@ function appendHeaders() {
 		.withSuccessHandler(
       function (msg, element) {
 				for (var i = 0; i < msg.length; i++) {
-          //TODO check sanitation
 					$("#baseList").append('<li id="' + i + '"><span class="mdl-chip"><span class="mdl-chip__text">' + msg[i] + '</span></span></li>')
 				}
 				materialLoading(false);
