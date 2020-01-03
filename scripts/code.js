@@ -195,7 +195,7 @@ function prefillForm(shortenType, startRow, maxRows) {
     }
 
     //show user working status
-    currentSheet.getRange(i + 3 + startRow, selectedQs.length + 1).setValue("Working...").setBackground("#fce8b2")
+    currentSheet.getRange(i + 3 + startRow, selectedQs.length + 1).setValue("WORKING...").setBackground("#fce8b2")
 
     //immediately display changes to the spreadsheet
     SpreadsheetApp.flush();
@@ -320,10 +320,10 @@ function prefillForm(shortenType, startRow, maxRows) {
       //console.log(url)
       urls.push(url)
       //console.log("url pushed")
-      currentSheet.getRange(i + 3 + startRow, selectedQs.length + 1).setValue("Response Created").setBackground("#b7e1cd")
+      currentSheet.getRange(i + 3 + startRow, selectedQs.length + 1).setValue("RESPONSE_CREATED").setBackground("#b7e1cd")
     } catch (e) {
       console.log(e)
-      currentSheet.getRange(i + 3 + startRow, selectedQs.length + 1).setValue("Error").setBackground("#f4c7c3")
+      currentSheet.getRange(i + 3 + startRow, selectedQs.length + 1).setValue("ERROR").setBackground("#f4c7c3")
       urls.push("")
     }
 
