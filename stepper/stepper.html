@@ -65,6 +65,9 @@
             <br>
             <strong><?=sheet.getName()?></strong>
             </p>
+            <b>Do not delete/insert columns</b>
+            <br>
+            <br>
           <? } ?>
 
           <div>
@@ -83,6 +86,19 @@
           </div>
 
           <button id="prefill" data-stepper-next>Prefill</button>
+          <?
+          var id = getProp("sheetId");
+          var sheet = getSheetById(parseInt(id, 10))
+          if(sheet){
+            var selectedQsId = getProp("selectedQs").split(SPLIT)
+
+            if (selectedQsId.length + 1 == sheet.getMaxColumns()) { ?>
+              <br>
+              <br>
+              <b>This action will delete the existing "Prefilled Links" column</b>
+          <?  }
+          }
+          ?>
         </div>
 
         <div class="mdl-step__actions">

@@ -114,20 +114,30 @@ function prefillRunner(shortenType){
   var responses = currentSheet.getLastRow() - 2;
   var i = 0;
 
-  //get selected questions and their ids
+  //get selected questions and ids
+  var selectedQs = getProp("selectedQsName").split(SPLIT)
   var selectedQsId = getProp("selectedQs").split(SPLIT)
+
+
+//onEdit, show sidebar with column deletion
 
   //if Prefilled Links column doesn't exist, create it
   if (selectedQsId.length == currentSheet.getMaxColumns()) {
     currentSheet.insertColumnAfter(currentSheet.getMaxColumns()).setColumnWidth(currentSheet.getMaxColumns(), 170)
     currentSheet.getRange(1, currentSheet.getMaxColumns()).setValue("Prefilled Links")
-  }else{
+  }else if(selectedQsId.length + 1 == currentSheet.getMaxColumns()){
     currentSheet.deleteColumn(currentSheet.getMaxColumns())
     currentSheet.insertColumnAfter(currentSheet.getMaxColumns()).setColumnWidth(currentSheet.getMaxColumns(), 170)
     currentSheet.getRange(1, currentSheet.getMaxColumns()).setValue("Prefilled Links")
+  }else{
+    throw "Columns have been deleted."
   }
   //TODO show warning, will delete existing links
   //TODO show do not delete columns message
+
+  var range = currentSheet.getRange(1, 1, (currentSheet.getLastRow()), selectedQsId.length).clearNote()
+  var outputRange = currentSheet.getRange(3, (selectedQsId.length + 1), currentSheet.getLastRow() - 2).setDataValidation(null)
+  currentSheet.getRange(1, 1, 2, selectedQs.length).setValues([selectedQs, selectedQsId])
 
   while (i < responses) {
     prefillForm(shortenType, i, 10)
@@ -152,6 +162,7 @@ function prefillForm(shortenType, startRow, maxRows) {
     prefillForm(shortenType, startRow+5, maxRows)
   }
   */
+
   //temporarily change timezone to GMT
   var timeZone = spreadsheet.getSpreadsheetTimeZone()
   spreadsheet.setSpreadsheetTimeZone("Etc/GMT")
@@ -169,16 +180,9 @@ function prefillForm(shortenType, startRow, maxRows) {
   var selectedQs = getProp("selectedQsName").split(SPLIT)
   var selectedQsId = getProp("selectedQs").split(SPLIT)
 
-  //clear data validation
-  currentSheet.getRange(3 + startRow, (selectedQs.length + 1), Math.min(currentSheet.getMaxRows() - 2 - startRow, maxRows)).setDataValidation(null)
-
   var range = currentSheet.getRange(1 + startRow, 1, Math.min(currentSheet.getLastRow() - startRow, maxRows + 2), selectedQs.length)
   var outputRange = currentSheet.getRange(3 + startRow, (selectedQs.length + 1), Math.min(currentSheet.getLastRow() - 2 - startRow, maxRows))
   var rangeValues = range.getValues()
-
-  //clear error notes and progress colors
-  range.clearNote();
-  outputRange.setBackground("white")
 
   var urls = []
   var lastRow = Math.min(currentSheet.getLastRow() - 2 - startRow, maxRows);
