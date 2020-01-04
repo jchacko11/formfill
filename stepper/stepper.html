@@ -60,17 +60,15 @@
           <? var id = getProp("sheetId");
           var sheet = getSheetById(parseInt(id, 10))
           if(sheet){ ?>
+            <div id="contextualAlert" class="formfill_alert formfill_alert-link formfill_alert-info">
+              <i class="material-icons formfill_alert-icon">info_outline</i>
+              This add-on makes use of column order. Do not delete, insert, or reorder columns.
+            </div>
 
             <p>Prefill your data in the sheet:
             <br>
             <strong><?=sheet.getName()?></strong>
             </p>
-
-            <div id="contextualAlert" class="formfill_alert formfill_alert-link formfill_alert-info">
-                <i class="material-icons formfill_alert-icon">info_outline</i>
-                This add-on makes use of column order. Do not delete, insert, or reorder columns.
-            </div>
-
           <? } ?>
 
           <div>
@@ -88,7 +86,6 @@
             </div>
           </div>
 
-          <button id="prefill" data-stepper-next>Prefill</button>
           <?
           var id = getProp("sheetId");
           var sheet = getSheetById(parseInt(id, 10))
@@ -96,17 +93,22 @@
             var selectedQsId = getProp("selectedQs").split(SPLIT)
 
             if (selectedQsId.length + 1 == sheet.getMaxColumns()) { ?>
-              <br>
-              <br>
-              <b>This action will delete the existing "Prefilled Links" column</b>
-          <?  }
-          }
-          ?>
+
+              <div id="contextualAlert" class="formfill_alert formfill_alert-warning">
+                <div><i class="material-icons formfill_alert-icon">warning</i>
+                  Prefilling will delete the existing links column.</div>
+                </div>
+
+              <?  }
+            }
+            ?>
+            
+          <button id="prefill" data-stepper-next>Prefill</button>
         </div>
 
         <div class="mdl-step__actions">
           <button id="continue2" class="action" data-stepper-next disabled>Continue</button>
-          <button data-stepper-back>Back</button>
+          <button class="secondaryButton" data-stepper-back>Back</button>
         </div>
       </li>
 
@@ -150,7 +152,7 @@
 
         <div class="mdl-step__actions">
           <button id="new" onclick="google.script.run.clearDocProperties()" class="create" data-stepper-next>Reset</button>
-          <button data-stepper-back>Back</button>
+          <button class="secondaryButton" data-stepper-back>Back</button>
         </div>
       </li>
 
