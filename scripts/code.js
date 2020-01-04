@@ -339,7 +339,7 @@ function prefillForm(shortenType, startRow, maxRows) {
         out.push(['Error'])
       }
     }
-    setProp("shortenedUrls", urls.join("<>"))
+    setProp("shortenedUrls", urls.join(SPLIT))
   } else {
     //bulk shorten using SHORT or UNGUSSABLE
     if (shortenType == "short") {
@@ -355,7 +355,7 @@ function prefillForm(shortenType, startRow, maxRows) {
       }
     }
     console.log(shortened)
-    setProp("shortenedUrls", shortened.join("<>"))
+    setProp("shortenedUrls", shortened.join(SPLIT))
   }
 
   //output urls
@@ -390,7 +390,7 @@ function createPrintables() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   var currentSheet = spreadsheet.insertSheet()
   setProp("printSheet", currentSheet.getSheetId().toFixed())
-  var shortenedUrls = getProp("shortenedUrls").split("<>")
+  var shortenedUrls = getProp("shortenedUrls").split(SPLIT)
 
   //name current sheet, if already taken, and a random number to it
   try {
