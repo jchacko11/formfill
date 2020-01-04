@@ -1,5 +1,6 @@
 //getters and setters
 
+/*
 function setCurrentForm(value){
   var docProperties = PropertiesService.getDocumentProperties();
   if(docProperties){
@@ -42,7 +43,7 @@ function getSelected(){
     }
   }
 }
-
+*/
 function setProp(property, val){
   var docProperties = PropertiesService.getDocumentProperties();
   if(docProperties){
