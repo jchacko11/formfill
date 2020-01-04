@@ -66,7 +66,8 @@ function truncate(input, maxlength) {
 function randTime() {
   var d = new Date();
   var n = d.getTime();
-  return n - 1576000000000;
+  return n.toString().substring(7); ;
+
 }
 
 //gets all ints getween lower and upper bound inclusive
