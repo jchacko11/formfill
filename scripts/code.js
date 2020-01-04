@@ -136,7 +136,7 @@ function prefillRunner(shortenType){
   //TODO show do not delete columns message
 
   var range = currentSheet.getRange(1, 1, (currentSheet.getLastRow()), selectedQsId.length).clearNote()
-  var outputRange = currentSheet.getRange(3, (selectedQsId.length + 1), currentSheet.getLastRow() - 2).setDataValidation(null)
+  var outputRange = currentSheet.getRange(3, (selectedQsId.length + 1), currentSheet.getMaxRows() - 2).setDataValidation(null)
   currentSheet.getRange(1, 1, 2, selectedQs.length).setValues([selectedQs, selectedQsId])
 
   while (i < responses) {
