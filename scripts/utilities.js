@@ -66,7 +66,8 @@ function truncate(input, maxlength) {
 function randTime() {
   var d = new Date();
   var n = d.getTime();
-  return n.toString().substring(7); ;
+  return Math.floor((n - 1576000000000)/100);
+  //return n.toString().substring(7); ;
 
 }
 
