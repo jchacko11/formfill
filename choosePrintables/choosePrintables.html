@@ -20,8 +20,11 @@
 
     <p id="error" class="error" hidden>Error</p>
 
-    <button id="submit" class="action">Create Printables</button>
-    <button id="cancel" type="button" onclick="google.script.host.close()">Cancel</button>
+    <div class="button-bar">
+      <button id="submit" class="action">Create Printables</button>
+      <button id="cancel" type="button" onclick="google.script.host.close()">Cancel</button>
+    </div>
+
     <!-- Use a templated HTML printing scriptlet to import JavaScript. -->
     <?!= HtmlService.createHtmlOutputFromFile('imports').getContent(); ?>
     <?!= HtmlService.createHtmlOutputFromFile('choosePrintables/choosePrintables-js').getContent(); ?>
