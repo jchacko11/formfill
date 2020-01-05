@@ -18,7 +18,7 @@
             showError("Error getting Settings")
             console.log(e)
       		})
-      		.getProp("chunkAmount")
+      		.getUserProp("chunkAmount")
 
       })
   		.withFailureHandler(function (e) {
@@ -26,7 +26,7 @@
         showError("Error getting Settings")
         console.log(e)
   		})
-  		.getProp("shortenType")
+  		.getUserProp("shortenType")
 
   });
 
@@ -42,7 +42,7 @@
   			materialLoading(false);
         showError("Error saving selected columns")
   		})
-  		.setProps(["shortenType", "chunkAmount"], [$('#shorten').val(), $('#chunk').val()])
+  		.setUserProps(["shortenType", "chunkAmount"], [$('#shorten').val(), $('#chunk').val()])
   }
 
   function showError(error){

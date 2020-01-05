@@ -112,10 +112,10 @@ function prefillRunner(shortenType){
   var currentSheet = getSheetById(parseInt(getProp("sheetId"), 10))
   var responses = currentSheet.getLastRow() - 2;
 
-  shortenType = getProp("shortenType")
+  shortenType = getUserProp("shortenType")
   if(!shortenType) shortenType = "short"
 
-  var chunk = +getProp("chunkAmount")
+  var chunk = +getUserProp("chunkAmount")
   if(!chunk) chunk = 10;
 
   var i = 0;
