@@ -467,6 +467,20 @@ function createPrintables() {
     }
 */
 
+    
+    var partLength = selected.length;
+    var outputString = "Concatenate(";
+    for(var i = 0; i < partLength; i++){
+        if(i != 0){
+            outputString += (char + ", ");
+        }
+        outputString += (item1 + sheetName + "R[2]C[" + (parseInt(selected[i], 10) - 1) + "]" + item2);
+    }
+    outputString += ")";
+
+    var final = outputString;
+
+
     //set data and formatting second column
     range2.setFormula(final)
     range2.setFontSize(24)
