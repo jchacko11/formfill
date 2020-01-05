@@ -65,28 +65,21 @@
               This add-on makes use of column order. Do not delete, insert, or reorder columns.
             </div>
 
+            <? var selectedQsId = getProp("selectedQs").split(SPLIT)
+              if (selectedQsId.length + 1 == sheet.getMaxColumns()) { ?>
+                
+                <div id="contextualAlert" class="formfill_alert formfill_alert-warning">
+                  <div><i class="material-icons formfill_alert-icon">warning</i>
+                    Prefilling will delete the existing links column.</div>
+                  </div>
+
+                <?  }  ?>
+
             <p>Prefill your data in the sheet:
             <br>
             <strong><?=sheet.getName()?></strong>
             </p>
           <? } ?>
-
-          <?
-          var id = getProp("sheetId");
-          var sheet = getSheetById(parseInt(id, 10))
-          if(sheet){
-            var selectedQsId = getProp("selectedQs").split(SPLIT)
-
-            if (selectedQsId.length + 1 == sheet.getMaxColumns()) { ?>
-
-              <div id="contextualAlert" class="formfill_alert formfill_alert-warning">
-                <div><i class="material-icons formfill_alert-icon">warning</i>
-                  Prefilling will delete the existing links column.</div>
-                </div>
-
-              <?  }
-            }
-            ?>
 
           <button id="prefill" data-stepper-next>Prefill</button>
         </div>
