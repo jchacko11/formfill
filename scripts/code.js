@@ -385,7 +385,7 @@ function getHeaders() {
 
     return out;
   } else {
-    throw "Error";
+    return "Error";
   }
 }
 
