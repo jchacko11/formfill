@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_blank">
+  <!-- Use a templated HTML printing scriptlet to import common stylesheet -->
+  <?!= HtmlService.createHtmlOutputFromFile('settings/settings-css').getContent(); ?>
+</head>
+  <body style="overflow: hidden;">
+
+
+
+    <?!= HtmlService.createHtmlOutputFromFile('imports').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('settings/settings-js').getContent(); ?>
+  </body>
+</html>
