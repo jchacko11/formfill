@@ -1,4 +1,18 @@
 <script>
 
 
+  function save(){
+    materialLoading(true);
+
+    $("#save").prop("disabled", true)
+
+    google.script.run
+  		.withSuccessHandler(showSidebar)
+  		.withFailureHandler(function (e) {
+  			$("#save").prop("disabled", false)
+  			materialLoading(false);
+        showError("Error saving selected columns")
+  		})
+  		.setProps(["shortenType", "chunkAmount"], [$('#shorten').val(), $('#chunk').val()])
+  }
 </script>
