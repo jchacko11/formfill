@@ -111,6 +111,13 @@ function prefillRunner(shortenType){
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   var currentSheet = getSheetById(parseInt(getProp("sheetId"), 10))
   var responses = currentSheet.getLastRow() - 2;
+
+  shortenType = getProp("shortenType")
+  if(!shortenType) shortenType = "short"
+
+  var chunk = +getProp("chunkAmount")
+  if(!chunk) chunk = 10;
+
   var i = 0;
 
   //get selected questions and ids
@@ -136,13 +143,12 @@ function prefillRunner(shortenType){
   var shortened = []
 
   while (i < responses) {
-    shortened = shortened.concat(prefillForm(shortenType, i, 10))
+    shortened = shortened.concat(prefillForm(shortenType, i, chunk))
     if(getProp("emergencyStop") == 'true'){
       setProp("emergencyStop", "false")
       return;
     }
-    //TODO change this in settings
-    i+=10;
+    i+=chunk;
   }
 
   setProp("shortenedUrls", shortened.join(SPLIT))
