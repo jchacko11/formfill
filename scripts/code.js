@@ -322,8 +322,6 @@ function prefillForm(shortenType, startRow, maxRows) {
       currentSheet.getRange(i + 3 + startRow, selectedQs.length + 1).setValue("ERROR").setBackground("#f4c7c3")
       urls.push("")
     }
-    //immediately display changes to the spreadsheet
-    SpreadsheetApp.flush();
 
   }
 
