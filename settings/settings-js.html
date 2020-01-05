@@ -15,4 +15,17 @@
   		})
   		.setProps(["shortenType", "chunkAmount"], [$('#shorten').val(), $('#chunk').val()])
   }
+
+  function showError(error){
+    google.script.run
+      .withSuccessHandler(function (output) {
+        $("#error").show()
+        $("#error").html(output)
+      })
+      .sanitize(error.toString());
+  }
+
+  function hideError(){
+    $("#error").hide()
+  }
 </script>
