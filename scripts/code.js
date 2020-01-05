@@ -391,7 +391,7 @@ function getHeaders() {
   }
 }
 
-//TODO alert user that affecting prefill form will update printables
+
 function createPrintables() {
 
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
@@ -414,7 +414,10 @@ function createPrintables() {
   currentSheet.setRowHeights(1, currentSheet.getMaxRows(), 300)
   currentSheet.setColumnWidth(1, 300).setColumnWidth(2, 425)
 
+  //first column
   var range1 = currentSheet.getRange(1, 1, currentSheet.getMaxRows())
+
+  //second column
   var range2 = range1.offset(0, 1)
   var qrCodes = [];
 
@@ -467,19 +470,17 @@ function createPrintables() {
     }
 */
 
-    
-    var partLength = selected.length;
-    var outputString = "Concatenate(";
-    for(var i = 0; i < partLength; i++){
+    //build formulas for data column of printables
+    var numParts = selected.length
+    var outputString = "Concatenate("
+    for(var i = 0; i < numParts; i++){
         if(i != 0){
-            outputString += (char + ", ");
+            outputString += (char + ", ")
         }
-        outputString += (item1 + sheetName + "R[2]C[" + (parseInt(selected[i], 10) - 1) + "]" + item2);
+        outputString += (item1 + sheetName + "R[2]C[" + (parseInt(selected[i], 10) - 1) + "]" + item2)
     }
-    outputString += ")";
-
-    var final = outputString;
-
+    outputString += ")"
+    var final = outputString
 
     //set data and formatting second column
     range2.setFormula(final)
