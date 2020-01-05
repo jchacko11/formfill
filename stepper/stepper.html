@@ -102,7 +102,7 @@
               <?  }
             }
             ?>
-            
+
           <button id="prefill" data-stepper-next>Prefill</button>
         </div>
 
@@ -121,6 +121,12 @@
         </span>
 
         <div class="mdl-step__content">
+
+        <div id="contextualAlert" class="formfill_alert formfill_alert-link formfill_alert-info">
+          <i class="material-icons formfill_alert-icon">info_outline</i>
+          Updating the prefill sheet will dynamically update the printable sheet.
+        </div>
+
         <p>Choose information to be displayed with printable QR Codes.</p>
 
         <button onclick="google.script.run.showChoosePrintables()">Choose info</button>
