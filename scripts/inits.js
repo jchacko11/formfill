@@ -80,8 +80,8 @@ function showSettings() {
   //setProp("emergencyStop", 'false')
   var ui = HtmlService.createTemplateFromFile('settings/settings')
     .evaluate()
-    .setWidth(800)
-    .setHeight(525)
+    .setWidth(300)
+    .setHeight(250)
     .setSandboxMode(HtmlService.SandboxMode.IFRAME);
   SpreadsheetApp.getUi().showModalDialog(ui, "Settings");
 }
