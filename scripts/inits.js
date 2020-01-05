@@ -22,6 +22,7 @@ function onOpen(e) {
     .addItem('Select Questions', 'showPicker')
     .addItem('Stop Prefilling', 'emergencyStop')
     .addItem('Reset', 'clearDocProperties')
+    .addItem('Settings', 'showSettings')
     .addToUi();
 }
 
@@ -70,6 +71,19 @@ function showChoosePrintables() {
     .setHeight(525)
     .setSandboxMode(HtmlService.SandboxMode.IFRAME);
   SpreadsheetApp.getUi().showModalDialog(ui, "Choose Printable Information");
+}
+
+/**
+ * Open Settings
+ */
+function showSettings() {
+  //setProp("emergencyStop", 'false')
+  var ui = HtmlService.createTemplateFromFile('settings/settings')
+    .evaluate()
+    .setWidth(800)
+    .setHeight(525)
+    .setSandboxMode(HtmlService.SandboxMode.IFRAME);
+  SpreadsheetApp.getUi().showModalDialog(ui, "Settings");
 }
 
 //https://ctrlq.org/code/20393-google-file-picker-example
