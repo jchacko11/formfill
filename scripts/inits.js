@@ -21,8 +21,8 @@ function onOpen(e) {
     .addSeparator()
     .addItem('Select Questions', 'showPicker')
     .addItem('Stop Prefilling', 'emergencyStop')
-    .addItem('Reset', 'clearDocProperties')
     .addItem('Settings', 'showSettings')
+    .addItem('Reset', 'clearDocProperties')
     .addToUi();
 }
 
