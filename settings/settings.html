@@ -8,27 +8,29 @@
   <body style="overflow: hidden;">
 
     <div class="block form-group">
-      <label for="select">Shorten Type</label>
+      <label for="shorten">Shorten Type</label>
       <select id="shorten">
-        <option selected id="1">Shorten Links (Short)</option>
-        <option id="2">Shorten Links (Unguessable)</option>
-        <option id="3">Don't Shorten Links</option>
+        <option selected value="short">Shorten Links (Short)</option>
+        <option value="unguessable">Shorten Links (Unguessable)</option>
+        <option value="noshort">Don't Shorten Links</option>
       </select>
     </div>
 
     <div class="block form-group">
-      <label for="select">Response creation chunk size</label>
+      <label for="chunk">Response creation chunk size</label>
       <select id="chunk">
-        <option id="5">5</option>
-        <option id="10" selected>10</option>
-        <option id="20">20</option>
-        <option id="50">50</option>
-        <option id="100">100</option>
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
       </select>
     </div>
 
+    <p id="error" class="error" hidden>Error</p>
+    
     <div class="button-bar">
-      <button id="save" type="button" class="action" disabled>Save</button>
+      <button id="save" type="button" onClick="save()" class="action">Save</button>
       <button id="cancel" type="button" onclick="google.script.host.close()">Cancel</button>
     </div>
 
