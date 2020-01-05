@@ -133,11 +133,16 @@ function prefillRunner(shortenType){
   var outputRange = currentSheet.getRange(3, (selectedQsId.length + 1), currentSheet.getMaxRows() - 2).setDataValidation(null)
   currentSheet.getRange(1, 1, 2, selectedQs.length).setValues([selectedQs, selectedQsId])
 
+  var shortened = []
+
   while (i < responses) {
-    prefillForm(shortenType, i, 10)
+    shortened = shortened.concat(prefillForm(shortenType, i, 10))
     //TODO change this in settings
     i+=10;
   }
+
+  setProp("shortenedUrls", shortened.join(SPLIT))
+  setProp("prefillStatus", "true")
 }
 
 function prefillForm(shortenType, startRow, maxRows) {
@@ -317,6 +322,8 @@ function prefillForm(shortenType, startRow, maxRows) {
       currentSheet.getRange(i + 3 + startRow, selectedQs.length + 1).setValue("ERROR").setBackground("#f4c7c3")
       urls.push("")
     }
+    //immediately display changes to the spreadsheet
+    SpreadsheetApp.flush();
 
   }
 
@@ -330,7 +337,7 @@ function prefillForm(shortenType, startRow, maxRows) {
         out.push(['Error'])
       }
     }
-    setProp("shortenedUrls", urls.join(SPLIT))
+    //setProp("shortenedUrls", urls.join(SPLIT))
   } else {
     //bulk shorten using SHORT or UNGUSSABLE
     if (shortenType == "short") {
@@ -346,14 +353,22 @@ function prefillForm(shortenType, startRow, maxRows) {
       }
     }
     console.log(shortened)
-    setProp("shortenedUrls", shortened.join(SPLIT))
+    //setProp("shortenedUrls", shortened.join(SPLIT))
   }
 
   //output urls
   outputRange.setValues(out)
   //reset timezone to default
   spreadsheet.setSpreadsheetTimeZone(timeZone)
-  setProp("prefillStatus", "true")
+
+  //setProp("prefillStatus", "true")
+
+  if (shortenType == "noshort") {
+    return urls;
+  }else {
+    return shortened;
+  }
+
 }
 
 //get the available spreadsheet columns to place on printables
@@ -372,10 +387,11 @@ function getHeaders() {
 
     return out;
   } else {
-    return ["Error"];
+    throw "Error";
   }
 }
 
+//TODO alert user that affecting prefill form will update printables
 function createPrintables() {
 
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
@@ -428,6 +444,7 @@ function createPrintables() {
     console.log(parseInt(selected[0], 10) - 1)
 
     //build formulas for data column of printables
+    /*
     var final;
     switch (selected.length) {
       case 1:
@@ -448,6 +465,7 @@ function createPrintables() {
       default:
       break;
     }
+*/
 
     //set data and formatting second column
     range2.setFormula(final)
