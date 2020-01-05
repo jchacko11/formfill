@@ -14,8 +14,9 @@ function appendHeaders() {
 		.withSuccessHandler(
       function (msg, element) {
 				for (var i = 0; i < msg.length; i++) {
-					$("#baseList").append('<li id="' + i + '"><span class="mdl-chip"><span class="mdl-chip__text">' + msg[i] + '</span></span></li>')
+					$("#baseList").append('<li tabindex="0" id="' + i + '"><span class="mdl-chip"><span class="mdl-chip__text">' + msg[i] + '</span></span></li>')
 				}
+        updateAccess()
 				materialLoading(false);
 			})
 		.withFailureHandler(
@@ -83,5 +84,41 @@ function showError(error){
 
 function hideError(){
   $("#error").hide()
+}
+
+//accessibility for Drag
+function updateAccess(){
+
+    $('.connectedSortable li').focus(function() {
+       $(this).addClass("ui-selecting");
+    });
+    $('.connectedSortable li').focusout(function() {
+       $(this).removeClass("ui-selecting");
+    });
+
+    $('.connectedSortable li').bind('keydown', function(event) {
+      if(event.which == 37){
+        //left moves to selected
+        $(this).appendTo("#selected");
+      }else if(event.which == 39){
+        //right moves to base list
+        $(this).appendTo("#baseList");
+      }else if(event.which == 38){
+        //up moves up
+        $(this).insertBefore($(this).prev());
+      }else if(event.which == 40){
+        //down moves down
+        $(this).insertAfter($(this).next());
+      }else if(event.which == 13 || event.which == 32){
+        //enter or space moves to the other list
+        if($(this).parent().attr("id") == 'selected'){
+          $(this).appendTo("#baseList");
+        }else if($(this).parent().attr("id") == 'baseList'){
+          $(this).appendTo("#selected");
+        }
+      }
+      $(this).focus();
+    });
+
 }
 </script>
