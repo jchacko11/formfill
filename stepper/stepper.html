@@ -71,21 +71,6 @@
             </p>
           <? } ?>
 
-          <div>
-            <div class="bottom-6">
-              <input type="radio" name="shortenType" id="short" checked>
-              <label class="smalltext" for="short">Shorten Links (Short)</label>
-            </div>
-            <div class="bottom-6">
-              <input type="radio" name="shortenType" id="unguessable">
-              <label class="smalltext" for="unguessable">Shorten Links (Unguessable)</label>
-            </div>
-            <div class="bottom-10">
-              <input type="radio" name="shortenType" id="noshort">
-              <label class="smalltext" for="noshort">Don't Shorten Links</label>
-            </div>
-          </div>
-
           <?
           var id = getProp("sheetId");
           var sheet = getSheetById(parseInt(id, 10))
