@@ -92,3 +92,54 @@ function clearProps(properties){
     }
   }
 }
+
+
+//User PropertiesService
+function setUserProp(property, val){
+  var userProperties = PropertiesService.getUserProperties();
+  if(userProperties){
+    userProperties.setProperty(property, (val))
+  }
+}
+
+//set multiple properties
+function setUserProps(properties, values){
+  var userProperties = PropertiesService.getUserProperties();
+  if(userProperties){
+    for(var i = 0; i < properties.length; i++){
+      try{
+        userProperties.setProperty(properties[i], values[i])
+      }catch(e){
+        console.error("Property write error: " + e)
+      }
+    }
+  }
+
+}
+
+function getUserProp(property){
+  //check if undefines
+  var userProperties = PropertiesService.getUserProperties();
+  if(userProperties){
+    var prop = userProperties.getProperty(property)
+    if(prop){
+      return prop;
+    }
+  }
+}
+
+function clearUserProp(property){
+  var userProperties = PropertiesService.getUserProperties();
+  if(userProperties){
+    userProperties.deleteProperty(property)
+  }
+}
+
+function clearUserProps(properties){
+  var userProperties = PropertiesService.getUserProperties();
+  if(userProperties){
+    for each (var property in properties){
+      userProperties.deleteProperty(property)
+    }
+  }
+}
