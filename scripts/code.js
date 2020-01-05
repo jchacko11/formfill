@@ -137,6 +137,10 @@ function prefillRunner(shortenType){
 
   while (i < responses) {
     shortened = shortened.concat(prefillForm(shortenType, i, 10))
+    if(getProp("emergencyStop") == 'true'){
+      setProp("emergencyStop", "false")
+      return;
+    }
     //TODO change this in settings
     i+=10;
   }
@@ -187,11 +191,7 @@ function prefillForm(shortenType, startRow, maxRows) {
   var lastRow = Math.min(currentSheet.getLastRow() - 2 - startRow, maxRows);
 
   for (var i = 0; i < lastRow; i++) {
-    if(getProp("emergencyStop") == 'true'){
-      setProp("emergencyStop", "false")
-      showSidebar()
-      return;
-    }
+    if(getProp("emergencyStop") == 'true') return;
 
     //show user working status
     currentSheet.getRange(i + 3 + startRow, selectedQs.length + 1).setValue("WORKING...").setBackground("#fce8b2")
