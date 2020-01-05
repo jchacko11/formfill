@@ -19,6 +19,7 @@
     <div class="block form-group">
       <label for="chunk">Response creation chunk size</label>
       <select id="chunk">
+        <option value="1">1</option>
         <option value="5">5</option>
         <option value="10" selected>10</option>
         <option value="20">20</option>
@@ -28,7 +29,7 @@
     </div>
 
     <p id="error" class="error" hidden>Error</p>
-    
+
     <div class="button-bar">
       <button id="save" type="button" onClick="save()" class="action">Save</button>
       <button id="cancel" type="button" onclick="google.script.host.close()">Cancel</button>
