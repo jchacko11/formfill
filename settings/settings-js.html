@@ -1,6 +1,35 @@
 <script>
 
 
+  $(function () {
+    materialLoading(true);
+
+    google.script.run
+  		.withSuccessHandler(function(setting){
+        if(setting) $("#shorten").val(setting);
+
+        google.script.run
+      		.withSuccessHandler(function(setting){
+            if(setting) $("#chunk").val(setting);
+            materialLoading(false);
+          })
+      		.withFailureHandler(function (e) {
+      			materialLoading(false);
+            showError("Error getting Settings")
+            console.log(e)
+      		})
+      		.getProp("chunkAmount")
+
+      })
+  		.withFailureHandler(function (e) {
+  			materialLoading(false);
+        showError("Error getting Settings")
+        console.log(e)
+  		})
+  		.getProp("shortenType")
+
+  });
+
   function save(){
     materialLoading(true);
 
@@ -28,4 +57,15 @@
   function hideError(){
     $("#error").hide()
   }
+
+  function showSidebar() {
+  	google.script.run
+  		.withSuccessHandler(function () {
+  			google.script.host.close();
+  		}).withFailureHandler(function(){
+        showError("Error showing sidebar")
+      })
+  		.showSidebar();
+  }
+
 </script>
