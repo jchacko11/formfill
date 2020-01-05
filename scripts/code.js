@@ -107,12 +107,12 @@ function newSheet() {
   }
 }
 
-function prefillRunner(shortenType){
+function prefillRunner(){
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   var currentSheet = getSheetById(parseInt(getProp("sheetId"), 10))
   var responses = currentSheet.getLastRow() - 2;
 
-  shortenType = getUserProp("shortenType")
+  var shortenType = getUserProp("shortenType")
   if(!shortenType) shortenType = "short"
 
   var chunk = +getUserProp("chunkAmount")

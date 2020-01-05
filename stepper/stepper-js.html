@@ -55,7 +55,8 @@
       $(this).prop("disabled", true)
       materialLoading(true);
 
-      var shortenType = $("input[name='shortenType']:checked").attr("id")
+      //var shortenType = $("input[name='shortenType']:checked").attr("id")
+
       google.script.run
         .withSuccessHandler(function () {
           google.script.run.showSidebar();
@@ -67,7 +68,7 @@
           Stepper.error("Prefill Error")
         })
         .withUserObject(this)
-        .prefillRunner(shortenType);
+        .prefillRunner();
     });
 
 
