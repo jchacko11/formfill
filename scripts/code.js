@@ -351,7 +351,7 @@ function prefillForm(shortenType, startRow, maxRows) {
     }
     for each (var link in shortened) {
       if (link.error) {
-        out.push(["Error"])
+        out.push(["ERROR"])
       } else {
         out.push([link])
       }
