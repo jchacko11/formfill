@@ -246,18 +246,18 @@ function prefillForm(shortenType, startRow, maxRows) {
               break;
             case FormApp.ItemType.DATE:
               item = currentItem.asDateItem();
-              console.log(resp.toString());
+              //console.log(resp.toString());
               response.withItemResponse(item.createResponse(resp))
               break;
             case FormApp.ItemType.DATETIME:
               item = currentItem.asDateTimeItem();
-              console.log(resp.toString());
+              //console.log(resp.toString());
               response.withItemResponse(item.createResponse(resp))
               break;
             case FormApp.ItemType.DURATION:
               item = currentItem.asDurationItem();
-              console.log(resp.toString())
-              console.log("Duration: " + resp.getUTCHours() + ":" + resp.getUTCMinutes() + ":" + resp.getUTCSeconds())
+              //console.log(resp.toString())
+              //console.log("Duration: " + resp.getUTCHours() + ":" + resp.getUTCMinutes() + ":" + resp.getUTCSeconds())
               response.withItemResponse(item.createResponse(resp.getUTCHours(), resp.getUTCMinutes(), resp.getUTCSeconds()))
               break;
             case FormApp.ItemType.SCALE:
@@ -267,8 +267,8 @@ function prefillForm(shortenType, startRow, maxRows) {
               break;
             case FormApp.ItemType.TIME:
               item = currentItem.asTimeItem();
-              console.log(resp.toString())
-              console.log("Time: " + resp.getUTCHours() + ":" + resp.getUTCMinutes())
+              //console.log(resp.toString())
+              //console.log("Time: " + resp.getUTCHours() + ":" + resp.getUTCMinutes())
               response.withItemResponse(item.createResponse(resp.getUTCHours(), resp.getUTCMinutes()))
               break;
             default:
@@ -276,7 +276,7 @@ function prefillForm(shortenType, startRow, maxRows) {
               break;
           }
         } catch (e) {
-          console.error(e)
+          //console.error(e)
           var userError = e.toString();
           //create user friendly errors
           switch (currentItem.getType()) {
@@ -324,7 +324,7 @@ function prefillForm(shortenType, startRow, maxRows) {
       //console.log("url pushed")
       currentSheet.getRange(i + 3 + startRow, selectedQs.length + 1).setValue("RESPONSE_CREATED").setBackground("#b7e1cd")
     } catch (e) {
-      console.log(e)
+      //console.log(e)
       currentSheet.getRange(i + 3 + startRow, selectedQs.length + 1).setValue("ERROR").setBackground("#f4c7c3")
       urls.push("")
     }
@@ -356,7 +356,7 @@ function prefillForm(shortenType, startRow, maxRows) {
         out.push([link])
       }
     }
-    console.log(shortened)
+    //console.log(shortened)
     //setProp("shortenedUrls", shortened.join(SPLIT))
   }
 
@@ -426,8 +426,8 @@ function createPrintables() {
   var qrCodes = [];
 
   for each (var link in shortenedUrls) {
-    console.info(link)
-    console.info(link.error)
+    //console.info(link)
+    //console.info(link.error)
     if (link.error || link == '[object Object]') {
       //show error image
       qrCodes.push(['=IMAGE("https://developers.google.com/maps/documentation/maps-static/images/error-image-generic.png")'])
@@ -447,8 +447,8 @@ function createPrintables() {
 
   try {
     var selected = getProp("printableColumns").split(SPLIT);
-    console.log(parseInt(selected[0], 10))
-    console.log(parseInt(selected[0], 10) - 1)
+    //console.log(parseInt(selected[0], 10))
+    //console.log(parseInt(selected[0], 10) - 1)
 
     //build formulas for data column of printables
     /*
@@ -491,7 +491,7 @@ function createPrintables() {
     range2.setFontSize(24)
     range2.setWrapStrategy(SpreadsheetApp.WrapStrategy.WRAP).setVerticalAlignment("middle")
   } catch (e) {
-    console.error(e)
+    //console.error(e)
   }
   setProp('printStatus', 'true')
 }
