@@ -25,7 +25,7 @@
     google.script.run
       .withSuccessHandler(
         function (msg, element) {
-          console.log(msg)
+          //console.log(msg)
           // move on to next step according to ready state
           if (msg == 1) {
             Stepper.next();
@@ -47,7 +47,7 @@
         function (msg, element) {
           // Respond to failure conditions here.
           //TODO error handling
-          console.log(msg)
+          //console.log(msg)
         })
       .isReady();
 
