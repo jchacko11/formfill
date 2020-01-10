@@ -15,6 +15,34 @@ function listQuestions(id) {
   return output;
 }
 
+/**
+ * The event handler triggered when editing the spreadsheet.
+ * @param {Event} e The onEdit event.
+
+function onEdit(e) {
+  // Set a comment on the edited cell to indicate when it was changed.
+  var range = e.range;
+  range.setNote('Last modified: ' + new Date());
+
+  var currentSheet = range.getSheet();
+  var currentSheetId = sheet.getSheetId();
+  var ui = SpreadsheetApp.getUi();
+
+  var selectedSheetId = parseInt(getProp("sheetId"), 10);
+  var selectedQsId = getProp("selectedQs").split(SPLIT)
+  console.log(e)
+
+  if(selectedSheetId && selectedQsId){
+    if(selectedSheetId == currentSheetId){
+      //checking if columns are valid
+      var questionIds = currentSheet.getRange(2, 1, 1, selectedQs.length).getValues()[0];
+      if(!arraysEqual(selectedQsId, questionIds)) ui.alert("Column order has been changed");
+    }
+  }
+}
+*/
+
+
 //creates a new sheet with selected questions as column headers
 function newSheet() {
 
@@ -43,7 +71,7 @@ function newSheet() {
 
   var range = currentSheet.getRange(1, 1, 2, selectedQs.length)
   var values = [selectedQs, selectedQsId]
-  range.setFontWeight("bold").setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP).setValues(values)
+  range.setFontWeight("bold").setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP).setValues(values).setNumberFormat('@STRING@');
 
   //delete extraneous rows and columns
   currentSheet.deleteColumns(selectedQs.length + 1, currentSheet.getMaxColumns() - (selectedQs.length))
@@ -124,6 +152,12 @@ function prefillRunner(){
   var selectedQs = getProp("selectedQsName").split(SPLIT)
   var selectedQsId = getProp("selectedQs").split(SPLIT)
 
+  //checking if columns are valid
+  var questionIds = currentSheet.getRange(2, 1, 1, selectedQs.length).getValues()[0];
+  console.log(questionIds)
+  console.log(selectedQsId)
+  if(!arraysEqual(selectedQsId, questionIds)) throw "Column order has been changed";
+
   //if Prefilled Links column doesn't exist, create it
   if (selectedQsId.length == currentSheet.getMaxColumns()) {
     currentSheet.insertColumnAfter(currentSheet.getMaxColumns()).setColumnWidth(currentSheet.getMaxColumns(), 170)
@@ -136,7 +170,7 @@ function prefillRunner(){
     throw "Columns have been deleted."
   }
 
-  var range = currentSheet.getRange(1, 1, (currentSheet.getLastRow()), selectedQsId.length).clearNote()
+  var range = currentSheet.getRange(1, 1, (currentSheet.getMaxRows()), selectedQsId.length).clearNote()
   var outputRange = currentSheet.getRange(3, (selectedQsId.length + 1), currentSheet.getMaxRows() - 2).setDataValidation(null)
   currentSheet.getRange(1, 1, 2, selectedQs.length).setValues([selectedQs, selectedQsId])
 
@@ -430,6 +464,7 @@ function createPrintables() {
     //console.info(link.error)
     if (link.error || link == '[object Object]') {
       //show error image
+      //TODO make this a setting
       qrCodes.push(['=IMAGE("https://developers.google.com/maps/documentation/maps-static/images/error-image-generic.png")'])
     } else {
       //formula to show qr code
