@@ -79,7 +79,7 @@ function newSheet() {
 
   //protect range
   var unprotectedRange = currentSheet.getRange(3, 1, currentSheet.getMaxRows() - 2, currentSheet.getMaxColumns())
-  currentSheet.protect().setWarningOnly(true).setUnprotectedRanges([unprotectedRange])
+  //currentSheet.protect().setWarningOnly(true).setUnprotectedRanges([unprotectedRange])
 
   //get range of the first column of user input
   var rangey = currentSheet.getRange(3, 1, currentSheet.getMaxRows() - 2)
