@@ -45,7 +45,7 @@ function onEdit(e) {
 
 //creates a new sheet with selected questions as column headers
 function newSheet() {
-  
+
   clearProps(["shortenedUrls", "prefillStatus", "printableColumns", "printStatus"])
 
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
@@ -74,7 +74,9 @@ function newSheet() {
   range.setFontWeight("bold").setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP).setValues(values).setNumberFormat('@STRING@');
 
   //delete extraneous rows and columns
+  if(selectedQs.length < currentSheet.getMaxColumns())
   currentSheet.deleteColumns(selectedQs.length + 1, currentSheet.getMaxColumns() - (selectedQs.length))
+
   currentSheet.deleteRows(200, currentSheet.getMaxRows() - 200)
 
   //protect range

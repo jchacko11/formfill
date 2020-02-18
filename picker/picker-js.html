@@ -69,7 +69,7 @@ function fileSelected(data) {
     getItems(formId);
 
     //show form name
-    showTitle("Selected Form: " + (documents[0][google.picker.Document.NAME]));
+    showTitle("Selected: " + (documents[0][google.picker.Document.NAME]));
 
     //Reset prefill button state
     $("#prefill").prop("disabled", true);
