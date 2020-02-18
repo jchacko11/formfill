@@ -155,7 +155,7 @@ $('#prefill').click(function () {
       materialLoading(false);
       showError("Error saving selected information")
     })
-    .setProps(["selectedQs", "selectedQsName", "formId", "formName"], [checked[0].join(SPLIT), checked[1].join(SPLIT), formId, formName]);
+    .setProps(["selectedQs", "selectedQsName", "formId", "formName"], [checked[0].join(SPLIT), truncateEach(checked[1], 100).join(SPLIT), formId, formName]);
 
 });
 
@@ -193,4 +193,18 @@ function hideError(){
   $("#error").hide()
 }
 
+function truncateEach(arr, maxlength){
+  for(var i = 0; i<arr.length; i++){
+    var name = arr[i]
+    arr[i] = truncate(name, maxlength)
+  }
+  return arr;
+}
+
+function truncate(input, maxlength) {
+  if (input.length > maxlength)
+    return input.substring(0, maxlength - 3) + '...';
+  else
+    return input;
+}
 </script>
