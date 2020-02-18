@@ -45,7 +45,7 @@ function onEdit(e) {
 
 //creates a new sheet with selected questions as column headers
 function newSheet() {
-sdfsjldfjslkdfjlskdfj
+  
   clearProps(["shortenedUrls", "prefillStatus", "printableColumns", "printStatus"])
 
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
